@@ -13,12 +13,6 @@
 #define MAX_PARQUES 20 +1
 
 
-typedef struct node{
-    Parque *parque;
-    struct node *next;
-} Node;
-
-
 typedef struct {
     char nome_parque[BUFSIZ];
     int capacidade;
@@ -30,14 +24,6 @@ typedef struct {
 
 
 typedef struct {
-    char nome_parque[BUFSIZ];
-    char matricula;
-    Data data;
-    Hora hora; 
-} Carro;
-
-
-typedef struct {
     int d, m, a;
 } Data;
 
@@ -45,6 +31,22 @@ typedef struct {
 typedef struct {
     int h, min;
 } Hora;
+
+
+typedef struct {
+    char nome_parque[BUFSIZ];
+    char matricula;
+    Data data;
+    Hora hora; 
+} Carro;
+
+
+typedef struct node{
+    Parque *parque;
+    struct node *next;
+} Node;
+
+
 
 
 Node *insert_begin(Node *head, Parque *parque);

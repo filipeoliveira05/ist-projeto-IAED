@@ -146,7 +146,7 @@ int length(Node *head) {
 void print(Node *head) {
     Node *x = head;
     while (x != NULL) {
-        printf("%c %d %.2f %.2f %.2f\n",
+        printf("%s %d %.2f %.2f %.2f\n",
                x->parque->nome_parque,
                x->parque->capacidade,
                x->parque->valor_15,
@@ -160,7 +160,7 @@ void print(Node *head) {
 Node *lookup(Node *head, char nome_parque) {
     Node *x;
     for (x = head; x != NULL; x = x->next) {
-        if (x->parque->nome_parque == nome_parque)
+        if (strcmp(x->parque->nome_parque, nome_parque) == 0)
             return x;
     }
     return NULL;
