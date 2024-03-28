@@ -1,4 +1,8 @@
-/* iaed24 - ist1110633 - project */
+/*
+    Ficheiro: project1.c
+    Autor: Filipe Oliveira (ist1110633)
+    Descrição: Gestor de carreiras e paragens de autocarros (projeto 1 de IAED).
+*/
 
 #include "project.h"
 
@@ -44,7 +48,6 @@ void processar_input () {
 
     }
     
-    //free();
 }
 
 
@@ -189,6 +192,7 @@ Parque obter_parque_por_id (int id) {
     return stored_parques[id - 1];
 }
 
+/* Função */
 int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor_15_apos_1hora, float valor_max_diario) {
     Parque novo_parque;
 
@@ -207,7 +211,7 @@ int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor
         return FALSE;
     }
 
-    if (N_parques > MAX_PARQUES) {
+    if (N_parques >= MAX_PARQUES) {
         printf("too many parks.\n");
         return FALSE;
     }
@@ -227,7 +231,6 @@ int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor
 void processar_parques() {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
     int n_argumentos, i;
-    //Node *head = NULL;
 
     leLinha(argumentos, &n_argumentos);
 
