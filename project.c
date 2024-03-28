@@ -21,7 +21,6 @@ void processar_input () {
         switch (input) {
             case 'q':
                 running = FALSE;
-                //free();
                 break;
             case 'p':
                 processar_parques();
@@ -94,24 +93,23 @@ void leLinha(char list_of_words[][MAX_INPUT], int *argumentos) {
 
 
 
-Node *insert_begin(Node *head, Parque *parque) {
-    Node *x = malloc(sizeof(Node));
-    x->parque = parque;
-    x->next = head;
-    return x;
+Node *insert_begin(Node *head, int new_id) {
+    Node *novo = malloc(sizeof(Node));
+    novo->id = new_id;
+
+    novo->next = head;
+    head = novo;
+    return head;
 }
 
-Node *insert_end(Node *head, Parque *parque) {
-    Node *x = malloc(sizeof(Node));
-    x->parque = parque;
-    x->next = NULL;
-    if (head == NULL) {
-        return x;
-    }
-    Node *tail;
-    for (tail = head; tail->next != NULL; tail = tail->next);
-    tail->next = x;
-    return head;
+Node *insert_end(Node *tail, int new_id) {
+    Node *novo = malloc(sizeof(Node));
+    novo->id = new_id;
+
+    tail->next = novo;
+    novo->next = NULL;
+    tail = novo;
+    return tail;
 }
 
 Node *remove_node(Node *head, Node *node_to_remove) {
@@ -143,6 +141,7 @@ int length(Node *head) {
     return count;
 }
 
+/*
 void print(Node *head) {
     Node *x = head;
     while (x != NULL) {
@@ -155,6 +154,7 @@ void print(Node *head) {
         x = x->next;
     }
 }
+*/
 
 /*
 Node *lookup(Node *head, char nome_parque) {
@@ -167,16 +167,83 @@ Node *lookup(Node *head, char nome_parque) {
 }
 */
 
+
+//Fazer função que percorre a lista ligada toda e verifica se o parque já existe
+//Na função do criar_parque, encontrar forma de conectar o parque criado à lista ligada de parques
+//Adicionar condição do número máximo de parques à função criar_parque
+
+
+
+int parque_existe(char nome_parque[]) {
+    int i;
+   
+    for (i = 0; i < N_parques; i++) {
+        if (strcmp(stored_parques[i].nome_parque, nome_parque) == 0) {
+            return i + 1;
+        }
+    }
+    return FALSE;
+}
+
+Parque obter_parque_por_id (int id) {
+    return stored_parques[id - 1];
+}
+
+int parque_maximo_criado (Node *head) {
+    return length(head) > 20;
+}
+
+
+int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor_15_apos_1hora, float valor_max_diario) {
+    Parque novo_parque;
+
+    if (parque_existe(nome_parque)) {
+        printf ("%s: parking already exists.\n", nome_parque);
+        return FALSE;
+    }
+
+    if (capacidade <= 0) {
+        printf("%d: invalid capacity.\n", capacidade);
+        return FALSE;
+    }
+
+    if (!((valor_15 < valor_15_apos_1hora) && (valor_15_apos_1hora < valor_max_diario))) {
+        printf("invalid cost.\n");
+        return FALSE;
+    }
+
+    if (N_parques > MAX_PARQUES) {
+        printf("too many parks.\n");
+        return FALSE;
+    }
+
+    strcpy(novo_parque.nome_parque, nome_parque);
+    novo_parque.capacidade = capacidade;
+    novo_parque.valor_15 = valor_15;
+    novo_parque.valor_15_apos_1hora = valor_15_apos_1hora;
+    novo_parque.valor_max_diario = valor_max_diario;
+
+    stored_parques[N_parques++] = novo_parque;
+
+    return TRUE;
+}
+
+
 void processar_parques() {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
-    int n_argumentos;
+    int n_argumentos, i;
     //Node *head = NULL;
 
     leLinha(argumentos, &n_argumentos);
 
-    for (int i = 0; i < n_argumentos; i++) {
-        
-        printf("Argumento %d: %s\n", i+1, argumentos[i]);
+    if (n_argumentos == 0) {
+        for (i = 0; i < N_parques; i++) {
+            printf("%s %d %d\n", stored_parques[i].nome_parque, 
+            stored_parques[i].capacidade, stored_parques[i].capacidade);
+        }
+        return;
+    } else if (n_argumentos == 5) {
+        criar_parque(argumentos[0], atof(argumentos[1]), atof(argumentos[2]), atof(argumentos[3]), atof(argumentos[4]));
     }
 }
 

@@ -10,13 +10,13 @@
 #define MAX_INPUT BUFSIZ
 
 #define MAX_ARGUMENTOS 5
-#define MAX_PARQUES 20 +1
+#define MAX_PARQUES 20
 
 
 typedef struct {
     char nome_parque[BUFSIZ];
     int capacidade;
-    int numero_carros;
+    int lugares_disponiveis;
     float valor_15;
     float valor_15_apos_1hora;
     float valor_max_diario; 
@@ -42,15 +42,15 @@ typedef struct {
 
 
 typedef struct node{
-    Parque *parque;
+    int id;
     struct node *next;
 } Node;
 
 
 
 
-Node *insert_begin(Node *head, Parque *parque);
-Node *insert_end(Node *head, Parque *parque);
+Node *insert_begin(Node *head, int new_id);
+Node *insert_end(Node *tail, int new_id);
 Node *remove_node(Node *head, Node *node_to_remove);
 int length(Node *head);
 void print(Node *head);
