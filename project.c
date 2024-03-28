@@ -189,11 +189,6 @@ Parque obter_parque_por_id (int id) {
     return stored_parques[id - 1];
 }
 
-int parque_maximo_criado (Node *head) {
-    return length(head) > 20;
-}
-
-
 int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor_15_apos_1hora, float valor_max_diario) {
     Parque novo_parque;
 
@@ -207,7 +202,7 @@ int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor
         return FALSE;
     }
 
-    if (!((valor_15 < valor_15_apos_1hora) && (valor_15_apos_1hora < valor_max_diario))) {
+    if (!((valor_15 < valor_15_apos_1hora) && (valor_15_apos_1hora < valor_max_diario)) || valor_15 <= 0 || valor_15_apos_1hora <= 0 || valor_max_diario <= 0) {
         printf("invalid cost.\n");
         return FALSE;
     }
