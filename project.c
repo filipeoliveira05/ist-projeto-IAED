@@ -38,7 +38,7 @@ void processar_input () {
                 processar_parques();
                 break;
             case 'e':
-                //código
+                processar_entradas();
                 break;
             case 's':
                 //código
@@ -218,6 +218,7 @@ int criar_parque(char nome_parque[], int capacidade, float valor_15,
     /*Atribui os valores introduzidos pelo utilizador na estrutura do parque*/
     strcpy(novo_parque.nome_parque, nome_parque);
     novo_parque.capacidade = capacidade;
+    novo_parque.lugares_disponiveis = capacidade;
     novo_parque.valor_15 = valor_15;
     novo_parque.valor_15_apos_1hora = valor_15_apos_1hora;
     novo_parque.valor_max_diario = valor_max_diario;
@@ -250,6 +251,38 @@ void processar_parques() {
         criar_parque(argumentos[0], atof(argumentos[1]), atof(argumentos[2]),
                      atof(argumentos[3]), atof(argumentos[4]));
     }
+}
+
+
+
+
+
+
+//CÓDIGO PARA O COMANDO e
+
+int carro_existe(char matricula) {
+
+}
+
+
+int criar_carro(char nome_parque[BUFSIZ], char matricula, char data,char hora){
+    Carro novo_carro;
+
+}
+
+void leData(char *data) {
+    Data nova_data;
+
+    sscanf(data, "%d-%d-%d", &nova_data.d, &nova_data.m, &nova_data.a);
+}
+
+void processar_entradas() {
+    char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
+    int n_argumentos, i;
+
+    leLinha(argumentos, &n_argumentos);
+
+    criar_carro(argumentos[0], argumentos[1], argumentos[2], argumentos[3]);
 }
 
 
