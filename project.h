@@ -124,7 +124,7 @@ int dataRecente(Data d1, Data d2);
 int horaRecente(Hora h1, Hora h2);
 int data_hora_valida(Data d1, Hora h1, Data d2, Hora h2);
 
-void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
+int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 
 
 void processar_input (HashTable *hashTable);
