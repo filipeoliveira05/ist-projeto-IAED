@@ -13,17 +13,34 @@ int N_parques = 0;
 Parque stored_parques[MAX_PARQUES];
 
 /*Tempo atual*/
-Data data_atual;
-Hora hora_atual;
+Data *data_atual = NULL;
+Hora *hora_atual = NULL;
 
 
 int main () {
+    data_atual = malloc(sizeof(Data));
+    hora_atual = malloc(sizeof(Hora));
+    
     HashTable *hashTable = cria_HashTable();
     processar_input(hashTable);
+    
     free(hashTable);
+    free(data_atual);
+    free(hora_atual);
+
     return 0;
 }
 
+
+/*Atualiza a data e hora de data/hora para nova_data/nova_hora*/
+void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora) {
+    *data = nova_data;
+    *hora = nova_hora;
+
+    // Atualiza as variáveis globais data_atual e hora_atual
+    data_atual = data;
+    hora_atual = hora;
+}
 
 /*Recebe o input introduzido pelo utilizador.
 Enquanto não for introduzido o comando "q", o programa continua a correr.*/
@@ -358,6 +375,8 @@ void print_hashtable(HashTable *hashTable) {
 }
 
 
+
+
 void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
     // Alocar memória para o novo registro
     Registo *novo_registo = malloc(sizeof(Registo));
@@ -390,6 +409,97 @@ void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora
 
     // Subtrair 1 do número de lugares disponíveis
     parque->lugares_disponiveis--;
+
+    // Atualizar a hora e data atuais
+    atualizar_tempo(data_atual, hora_atual, data, hora);
+}
+
+
+int matricula_valida(char *matricula) {
+    int num_counter = 0, let_counter = 0;
+
+    //verifica primeiro par
+    if (isupper(matricula[0]) && isupper(matricula[1]))
+        let_counter += 1;
+    else if (isdigit(matricula[0]) && isdigit(matricula[1]))
+        num_counter += 1;
+
+    //verifica segundo par
+    if (isupper(matricula[3]) && isupper(matricula[4]))
+        let_counter += 1;
+    else if (isdigit(matricula[3]) && isdigit(matricula[4]))
+        num_counter += 1;
+
+    //verifica terceiro par
+    if (isupper(matricula[6]) && isupper(matricula[7]))
+        let_counter += 1;
+    else if (isdigit(matricula[6]) && isdigit(matricula[7]))
+        num_counter += 1;
+
+    //verifica counters
+    if (num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3)
+        return FALSE;
+    else
+        return TRUE;
+}
+
+
+int dataValida(Data d) {
+    int diaFinalMes = 0;
+
+    if (d.m == 1 || d.m == 3 || d.m == 5 || d.m == 7 || d.m == 8 || d.m == 10 || d.m == 12) {
+        diaFinalMes = 31;
+    } else if (d.m == 4 || d.m == 6 || d.m == 9 || d.m == 11) {
+        diaFinalMes = 30;
+    } else if (d.m == 2) {
+        diaFinalMes = 28;
+    }
+
+    if (d.d < 1 || d.d > diaFinalMes || d.m < 1 || d.m > 12) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+int horaValida(Hora h) {
+    if (h.min < 0 || h.min >= 60 || h.h < 0 || h.h >= 24) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/*Retorna TRUE se d2 for mais recente que d1, FALSE caso contrário*/
+int dataRecente(Data d1, Data d2) {
+    if (d1.a > d2.a)
+        return FALSE;
+    if (d1.a < d2.a)
+        return TRUE;
+    if (d1.m > d2.m)
+        return FALSE;
+    if (d1.m < d2.m)
+        return TRUE;
+    if (d1.d > d2.d)
+        return FALSE;
+    return TRUE;
+}
+
+
+/*Retorna TRUE se h2 for mais recente que h1, FALSE caso contrário*/
+int horaRecente(Hora h1, Hora h2) {
+    if (h1.h > h2.h)
+        return FALSE;
+    if (h1.h < h2.h)
+        return TRUE;
+    if (h1.min > h2.min)
+        return FALSE;
+    return TRUE;
+}
+
+int data_hora_valida(Data d1, Hora h1, Data d2, Hora h2) {
+    if (dataRecente(d1, d2) && horaRecente(h1, h2) && dataValida(d2) && horaValida(h2))
+        return TRUE;
+    else
+        return FALSE;
 }
 
 
@@ -419,6 +529,29 @@ void processar_entradas(HashTable *hashTable) {
             // Obtém o parque
             Parque *parque = &stored_parques[indice_parque - 1];
             
+            // Verifica se o parque está cheio
+            if (parque->lugares_disponiveis <= 0) {
+                printf("%s: parking is full.\n", nome_parque);
+                return;
+            }
+
+            // Verifica se a matrícula é válida
+            if (!matricula_valida(matricula)) {
+                printf("%s: invalid licence plate.\n", matricula);
+                return;
+            }
+
+            if (procura_na_hastable(hashTable, matricula)) {
+                printf("%s: invalid vehicle entry.\n", matricula);
+                return;
+            }
+
+            // Verifica se a data e hora são válidas
+            if (!data_hora_valida(*data_atual, *hora_atual, data, hora)) {
+                printf("invalid date.\n");
+                return;
+            }
+
             // Insere a entrada no parque
             insere_entrada_parque(parque, matricula, data, hora, hashTable);
             // Imprime a informação sobre o parque após cada entrada

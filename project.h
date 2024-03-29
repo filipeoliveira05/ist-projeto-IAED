@@ -96,6 +96,8 @@ typedef struct HashTable {
 
 
 /*Funções utilizadas*/
+
+void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
 void leLinha(char list_of_words[][MAX_INPUT], int *argumentos);
 
 Node *insert_begin(Node *head, int new_id);
@@ -107,7 +109,6 @@ nodeHASH *cria_node_matricula(char *matricula);
 HashTable *cria_HashTable();
 unsigned long hash(char *matricula);
 void insere_mat_hashtable(HashTable *hashTable, char *matricula);
-void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 nodeHASH *procura_na_hastable(HashTable *hashTable, char *matricula);
 void print_hashtable(HashTable *hashTable);
 
@@ -116,6 +117,14 @@ Parque obter_parque_por_id (int id);
 int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor_15_apos_1hora, float valor_max_diario);
 
 
+int matricula_valida(char *matricula);
+int dataValida(Data d);
+int horaValida(Hora h);
+int dataRecente(Data d1, Data d2);
+int horaRecente(Hora h1, Hora h2);
+int data_hora_valida(Data d1, Hora h1, Data d2, Hora h2);
+
+void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 
 
 void processar_input (HashTable *hashTable);
