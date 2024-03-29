@@ -358,7 +358,120 @@ void print_hashtable(HashTable *hashTable) {
 }
 
 
-void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
+
+/*Retorna TRUE se matricula for uma matricula válida*/
+int matricula_valida(char *matricula) {
+    int num_counter = 0, let_counter = 0;
+
+    //verifica primeiro par
+    if (isupper(matricula[0]) && isupper(matricula[1]))
+        let_counter += 1;
+    else if (isdigit(matricula[0]) && isdigit(matricula[1]))
+        num_counter += 1;
+
+    //verifica segundo par
+    if (isupper(matricula[3]) && isupper(matricula[4]))
+        let_counter += 1;
+    else if (isdigit(matricula[3]) && isdigit(matricula[4]))
+        num_counter += 1;
+
+    //verifica terceiro par
+    if (isupper(matricula[6]) && isupper(matricula[7]))
+        let_counter += 1;
+    else if (isdigit(matricula[6]) && isdigit(matricula[7]))
+        num_counter += 1;
+
+    //verifica counters
+    if (num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3)
+        return FALSE;
+    else
+        return TRUE;
+}
+
+
+/*Retorna TRUE se d for uma data válida*/
+int dataValida(Data d) {
+    int diaFinalMes = 0;
+
+    if (d.m == 1 || d.m == 3 || d.m == 5 || d.m == 7 || d.m == 8 || d.m == 10 || d.m == 12) {
+        diaFinalMes = 31;
+    } else if (d.m == 4 || d.m == 6 || d.m == 9 || d.m == 11) {
+        diaFinalMes = 30;
+    } else if (d.m == 2) {
+        diaFinalMes = 28;
+    }
+
+    if (d.d < 1 || d.d > diaFinalMes || d.m < 1 || d.m > 12) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/*Retorna TRUE se h for uma hora válida*/
+int horaValida(Hora h) {
+    if (h.min < 0 || h.min >= 60 || h.h < 0 || h.h >= 24) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/*Retorna TRUE se d2 for mais recente que d1, FALSE caso contrário*/
+int dataRecente(Data d1, Data d2) {
+    if (d1.a > d2.a)
+        return FALSE;
+    if (d1.a < d2.a)
+        return TRUE;
+    if (d1.m > d2.m)
+        return FALSE;
+    if (d1.m < d2.m)
+        return TRUE;
+    if (d1.d > d2.d)
+        return FALSE;
+    return TRUE;
+}
+
+/*Retorna TRUE se h2 for mais recente que h1, FALSE caso contrário*/
+int horaRecente(Hora h1, Hora h2) {
+    if (h1.h > h2.h)
+        return FALSE;
+    if (h1.h < h2.h)
+        return TRUE;
+    if (h1.min > h2.min)
+        return FALSE;
+    return TRUE;
+}
+
+/*Retorna TRUE se o instante 2 é mais recente que o 1, FALSE caso contrário*/
+int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
+    if (dataRecente(d1, d2) && horaRecente(h1, h2) && dataValida(d2) && horaValida(h2))
+        return TRUE;
+    else
+        return FALSE;
+}
+
+
+int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
+    
+    // Verifica se o parque está cheio
+            if (parque->lugares_disponiveis <= 0) {
+                return -1;
+            }
+
+            // Verifica se a matrícula é válida
+            if (!matricula_valida(matricula)) {
+                return -2;
+            }
+
+            if (procura_na_hastable(hashTable, matricula)) {
+                return -3;
+            }
+            /*
+            // Verifica se a data e hora são válidas
+            if (!data_hora_valida_e_recente(data_atual, hora_atual, data, hora)) {
+                return -4;
+            }
+            */
+
     // Alocar memória para o novo registro
     Registo *novo_registo = malloc(sizeof(Registo));
     if (novo_registo == NULL) {
@@ -390,8 +503,9 @@ void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora
 
     // Subtrair 1 do número de lugares disponíveis
     parque->lugares_disponiveis--;
-}
 
+    return 0;
+}
 
 void processar_entradas(HashTable *hashTable) {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
@@ -419,11 +533,31 @@ void processar_entradas(HashTable *hashTable) {
             // Obtém o parque
             Parque *parque = &stored_parques[indice_parque - 1];
             
-            // Insere a entrada no parque
-            insere_entrada_parque(parque, matricula, data, hora, hashTable);
-            // Imprime a informação sobre o parque após cada entrada
-            printf("%s %d\n", parque->nome_parque, parque->lugares_disponiveis);
-        } else {
+            int resultado = insere_entrada_parque(parque, matricula, data, hora, hashTable);
+            if (resultado == 0) {
+                // Imprime a informação sobre o parque após cada entrada
+                printf("%s %d\n", parque->nome_parque, parque->lugares_disponiveis);
+            }
+
+            else if (resultado == -1) {
+                printf("%s: parking is full.\n", nome_parque);
+            }
+            
+            else if (resultado == -2) {
+                printf("%s: invalid licence plate.\n", matricula);
+            }
+
+            else if (resultado == -3) {
+                printf("%s: invalid vehicle entry.\n", matricula);
+            }
+
+            else if (resultado == -4) {
+                printf("invalid date.\n");
+            }
+
+        } 
+        
+        else {
             printf("%s: no such parking.\n", nome_parque);
         }
     }
@@ -441,33 +575,3 @@ void processar_entradas(HashTable *hashTable) {
 //começar por onde da speed up e usar tabelas de dispersão
 
 //hastables para entradas e saidas
-
-
-/*
-//CÓDIGO PARA O COMANDO e
-
-int carro_existe(char matricula) {
-
-}
-
-
-int criar_carro(char nome_parque[BUFSIZ], char matricula, char data,char hora){
-    Carro novo_carro;
-
-}
-
-void leData(char *data) {
-    Data nova_data;
-
-    sscanf(data, "%d-%d-%d", &nova_data.d, &nova_data.m, &nova_data.a);
-}
-
-void processar_entradas() {
-    char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
-    int n_argumentos, i;
-
-    leLinha(argumentos, &n_argumentos);
-
-    criar_carro(argumentos[0], argumentos[1], argumentos[2], argumentos[3]);
-}
-*/
