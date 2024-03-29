@@ -106,7 +106,8 @@ int length(Node *head);
 nodeHASH *cria_node_matricula(char *matricula);
 HashTable *cria_HashTable();
 unsigned long hash(char *matricula);
-void insere_mat_hashtable(HashTable *hashTable, char *matricula, char *nome_parque, Data data, Hora hora);
+void insere_mat_hashtable(HashTable *hashTable, char *matricula);
+void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 nodeHASH *procura_na_hastable(HashTable *hashTable, char *matricula);
 void print_hashtable(HashTable *hashTable);
 
@@ -117,8 +118,9 @@ int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor
 
 
 
-void processar_input();
+void processar_input (HashTable *hashTable);
 void processar_parques();
+void processar_entradas(HashTable *hashTable);
 
 
 #endif

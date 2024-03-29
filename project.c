@@ -18,14 +18,16 @@ Hora hora_atual;
 
 
 int main () {
-    processar_input();
+    HashTable *hashTable = cria_HashTable();
+    processar_input(hashTable);
+    free(hashTable);
     return 0;
 }
 
 
 /*Recebe o input introduzido pelo utilizador.
 Enquanto não for introduzido o comando "q", o programa continua a correr.*/
-void processar_input () {
+void processar_input (HashTable *hashTable) {
     int running = TRUE;
 
     while (running) {
@@ -42,7 +44,7 @@ void processar_input () {
                 processar_parques();
                 break;
             case 'e':
-                //processar_entradas();
+                processar_entradas(hashTable);
                 break;
             case 's':
                 //código
@@ -59,7 +61,6 @@ void processar_input () {
         }
 
     }
-    
 }
 
 
@@ -307,7 +308,7 @@ unsigned long hash(char *matricula) {
 }
 
 
-/* insere_mat_hashtable antigo
+
 void insere_mat_hashtable(HashTable *hashTable, char *matricula) {
     int index = hash(matricula);
     nodeHASH *newNode = cria_node_matricula(matricula);
@@ -324,7 +325,7 @@ void insere_mat_hashtable(HashTable *hashTable, char *matricula) {
         current->next = newNode;
     }
 }
-*/
+
 
 
 nodeHASH *procura_na_hastable(HashTable *hashTable, char *matricula) {
@@ -357,8 +358,7 @@ void print_hashtable(HashTable *hashTable) {
 }
 
 
-
-void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora) {
+void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
     // Alocar memória para o novo registro
     Registo *novo_registo = malloc(sizeof(Registo));
     if (novo_registo == NULL) {
@@ -367,12 +367,12 @@ void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora
     }
 
     // Preencher os dados do novo registro
-    strcpy(novo_registo->matricula, matricula); // Usando strcpy para copiar a matrícula
+    strcpy(novo_registo->matricula, matricula);
     novo_registo->data = data;
     novo_registo->hora = hora;
     novo_registo->next = NULL;
 
-    // Verificar se a lista de entradas está vazia
+    // Inserir o novo registro na lista de entradas do parque
     if (parque->entradas == NULL) {
         parque->entradas = novo_registo;
     } else {
@@ -385,13 +385,15 @@ void insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora
         atual->next = novo_registo;
     }
 
+    // Atualizar o estado do veículo para DENTRO na hashtable de matrículas
+    insere_mat_hashtable(hashTable, matricula);
+
     // Subtrair 1 do número de lugares disponíveis
     parque->lugares_disponiveis--;
 }
 
 
-
-void processar_entradas() {
+void processar_entradas(HashTable *hashTable) {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
     int n_argumentos;
 
@@ -418,7 +420,7 @@ void processar_entradas() {
             Parque *parque = &stored_parques[indice_parque - 1];
             
             // Insere a entrada no parque
-            insere_entrada_parque(parque, matricula, data, hora);
+            insere_entrada_parque(parque, matricula, data, hora, hashTable);
         } else {
             printf("%s: no such parking.\n", nome_parque);
         }
