@@ -421,6 +421,8 @@ void processar_entradas(HashTable *hashTable) {
             
             // Insere a entrada no parque
             insere_entrada_parque(parque, matricula, data, hora, hashTable);
+            // Imprime a informação sobre o parque após cada entrada
+            printf("%s %d\n", parque->nome_parque, parque->lugares_disponiveis);
         } else {
             printf("%s: no such parking.\n", nome_parque);
         }
