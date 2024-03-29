@@ -122,7 +122,7 @@ int dataValida(Data d);
 int horaValida(Hora h);
 int dataRecente(Data d1, Data d2);
 int horaRecente(Hora h1, Hora h2);
-int data_hora_valida(Data d1, Hora h1, Data d2, Hora h2);
+int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2);
 
 int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 

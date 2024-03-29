@@ -376,6 +376,96 @@ void print_hashtable(HashTable *hashTable) {
 
 
 
+/*Retorna TRUE se matricula for uma matricula válida*/
+int matricula_valida(char *matricula) {
+    int num_counter = 0, let_counter = 0;
+
+    //verifica primeiro par
+    if (isupper(matricula[0]) && isupper(matricula[1]))
+        let_counter += 1;
+    else if (isdigit(matricula[0]) && isdigit(matricula[1]))
+        num_counter += 1;
+
+    //verifica segundo par
+    if (isupper(matricula[3]) && isupper(matricula[4]))
+        let_counter += 1;
+    else if (isdigit(matricula[3]) && isdigit(matricula[4]))
+        num_counter += 1;
+
+    //verifica terceiro par
+    if (isupper(matricula[6]) && isupper(matricula[7]))
+        let_counter += 1;
+    else if (isdigit(matricula[6]) && isdigit(matricula[7]))
+        num_counter += 1;
+
+    //verifica counters
+    if (num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3)
+        return FALSE;
+    else
+        return TRUE;
+}
+
+
+/*Retorna TRUE se d for uma data válida*/
+int dataValida(Data d) {
+    int diaFinalMes = 0;
+
+    if (d.m == 1 || d.m == 3 || d.m == 5 || d.m == 7 || d.m == 8 || d.m == 10 || d.m == 12) {
+        diaFinalMes = 31;
+    } else if (d.m == 4 || d.m == 6 || d.m == 9 || d.m == 11) {
+        diaFinalMes = 30;
+    } else if (d.m == 2) {
+        diaFinalMes = 28;
+    }
+
+    if (d.d < 1 || d.d > diaFinalMes || d.m < 1 || d.m > 12) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/*Retorna TRUE se h for uma hora válida*/
+int horaValida(Hora h) {
+    if (h.min < 0 || h.min >= 60 || h.h < 0 || h.h >= 24) {
+        return FALSE;
+    }
+    return TRUE;
+}
+
+/*Retorna TRUE se d2 for mais recente que d1, FALSE caso contrário*/
+int dataRecente(Data d1, Data d2) {
+    if (d1.a > d2.a)
+        return FALSE;
+    if (d1.a < d2.a)
+        return TRUE;
+    if (d1.m > d2.m)
+        return FALSE;
+    if (d1.m < d2.m)
+        return TRUE;
+    if (d1.d > d2.d)
+        return FALSE;
+    return TRUE;
+}
+
+/*Retorna TRUE se h2 for mais recente que h1, FALSE caso contrário*/
+int horaRecente(Hora h1, Hora h2) {
+    if (h1.h > h2.h)
+        return FALSE;
+    if (h1.h < h2.h)
+        return TRUE;
+    if (h1.min > h2.min)
+        return FALSE;
+    return TRUE;
+}
+
+/*Retorna TRUE se o instante 2 é mais recente que o 1, FALSE caso contrário*/
+int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
+    if (dataRecente(d1, d2) && horaRecente(h1, h2) && dataValida(d2) && horaValida(h2))
+        return TRUE;
+    else
+        return FALSE;
+}
+
 
 int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
     
@@ -394,7 +484,7 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
             }
 
             // Verifica se a data e hora são válidas
-            if (!data_hora_valida(*data_atual, *hora_atual, data, hora)) {
+            if (!data_hora_valida_e_recente(*data_atual, *hora_atual, data, hora)) {
                 return -4;
             }
     
@@ -436,94 +526,6 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
 
     return 0;
 }
-
-
-int matricula_valida(char *matricula) {
-    int num_counter = 0, let_counter = 0;
-
-    //verifica primeiro par
-    if (isupper(matricula[0]) && isupper(matricula[1]))
-        let_counter += 1;
-    else if (isdigit(matricula[0]) && isdigit(matricula[1]))
-        num_counter += 1;
-
-    //verifica segundo par
-    if (isupper(matricula[3]) && isupper(matricula[4]))
-        let_counter += 1;
-    else if (isdigit(matricula[3]) && isdigit(matricula[4]))
-        num_counter += 1;
-
-    //verifica terceiro par
-    if (isupper(matricula[6]) && isupper(matricula[7]))
-        let_counter += 1;
-    else if (isdigit(matricula[6]) && isdigit(matricula[7]))
-        num_counter += 1;
-
-    //verifica counters
-    if (num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3)
-        return FALSE;
-    else
-        return TRUE;
-}
-
-int dataValida(Data d) {
-    int diaFinalMes = 0;
-
-    if (d.m == 1 || d.m == 3 || d.m == 5 || d.m == 7 || d.m == 8 || d.m == 10 || d.m == 12) {
-        diaFinalMes = 31;
-    } else if (d.m == 4 || d.m == 6 || d.m == 9 || d.m == 11) {
-        diaFinalMes = 30;
-    } else if (d.m == 2) {
-        diaFinalMes = 28;
-    }
-
-    if (d.d < 1 || d.d > diaFinalMes || d.m < 1 || d.m > 12) {
-        return FALSE;
-    }
-    return TRUE;
-}
-
-int horaValida(Hora h) {
-    if (h.min < 0 || h.min >= 60 || h.h < 0 || h.h >= 24) {
-        return FALSE;
-    }
-    return TRUE;
-}
-
-/*Retorna TRUE se d2 for mais recente que d1, FALSE caso contrário*/
-int dataRecente(Data d1, Data d2) {
-    if (d1.a > d2.a)
-        return FALSE;
-    if (d1.a < d2.a)
-        return TRUE;
-    if (d1.m > d2.m)
-        return FALSE;
-    if (d1.m < d2.m)
-        return TRUE;
-    if (d1.d > d2.d)
-        return FALSE;
-    return TRUE;
-}
-
-
-/*Retorna TRUE se h2 for mais recente que h1, FALSE caso contrário*/
-int horaRecente(Hora h1, Hora h2) {
-    if (h1.h > h2.h)
-        return FALSE;
-    if (h1.h < h2.h)
-        return TRUE;
-    if (h1.min > h2.min)
-        return FALSE;
-    return TRUE;
-}
-
-int data_hora_valida(Data d1, Hora h1, Data d2, Hora h2) {
-    if (dataRecente(d1, d2) && horaRecente(h1, h2) && dataValida(d2) && horaValida(h2))
-        return TRUE;
-    else
-        return FALSE;
-}
-
 
 void processar_entradas(HashTable *hashTable) {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
@@ -593,33 +595,3 @@ void processar_entradas(HashTable *hashTable) {
 //começar por onde da speed up e usar tabelas de dispersão
 
 //hastables para entradas e saidas
-
-
-/*
-//CÓDIGO PARA O COMANDO e
-
-int carro_existe(char matricula) {
-
-}
-
-
-int criar_carro(char nome_parque[BUFSIZ], char matricula, char data,char hora){
-    Carro novo_carro;
-
-}
-
-void leData(char *data) {
-    Data nova_data;
-
-    sscanf(data, "%d-%d-%d", &nova_data.d, &nova_data.m, &nova_data.a);
-}
-
-void processar_entradas() {
-    char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
-    int n_argumentos, i;
-
-    leLinha(argumentos, &n_argumentos);
-
-    criar_carro(argumentos[0], argumentos[1], argumentos[2], argumentos[3]);
-}
-*/
