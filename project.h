@@ -149,5 +149,6 @@ void processar_input (HashTable *hashTable);
 void processar_parques();
 void processar_entradas(HashTable *hashTable);
 
+void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
 
 #endif
