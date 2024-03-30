@@ -13,7 +13,7 @@ int N_parques = 0;
 Parque stored_parques[MAX_PARQUES];
 
 /*
-/*Tempo atual
+Tempo atual
 Data data_atual = {0, 0, 0};
 Hora hora_atual = {0, 0};
 */
