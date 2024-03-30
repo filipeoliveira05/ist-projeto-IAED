@@ -12,10 +12,11 @@ int N_parques = 0;
 /*Lista de parques no sistema.*/
 Parque stored_parques[MAX_PARQUES];
 
-/*Tempo atual*/
+/*
+/*Tempo atual
 Data data_atual = {0, 0, 0};
 Hora hora_atual = {0, 0};
-
+*/
 
 int main () {
     HashTable *hashTable = cria_HashTable();
@@ -499,11 +500,12 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
         return -3;
     }
     
+    /*
     // Verifica se a data e hora são válidas
     if (!data_hora_valida_e_recente(data_atual, hora_atual, data, hora)) {
         return -4;
     }
-            
+    */    
 
     // Alocar memória para o novo registro
     Registo_entradas *novo_registo = malloc(sizeof(Registo_entradas));
@@ -538,9 +540,11 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
     // Subtrair 1 do número de lugares disponíveis
     parque->lugares_disponiveis--;
 
+    /*
     //Atualiza o tempo atual
     data_atual = data;
     hora_atual = hora;
+    */
 
     return 0;
 }
@@ -589,9 +593,11 @@ void processar_entradas(HashTable *hashTable) {
                 printf("%s: invalid vehicle entry.\n", matricula);
             }
 
+            /*
             else if (resultado == -4) {
                 printf("invalid date.\n");
             }
+            */
 
         } 
         
