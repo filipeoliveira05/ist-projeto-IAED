@@ -14,6 +14,9 @@
 #include <ctype.h>
 #include <string.h>
 
+#define min(a, b) (((a) < (b)) ? (a) : (b))
+#define max(a, b) (((a) > (b)) ? (a) : (b))
+
 #define TRUE 1
 #define FALSE 0
 
@@ -64,7 +67,6 @@ typedef struct registo_s {
     char matricula[MAX_INPUT];
     Data data;
     Hora hora;
-    int estado;
     float custo;
     struct registo_s *next;
 } Registo_saidas;
@@ -138,16 +140,24 @@ int dataValida(Data d);
 int horaValida(Hora h);
 int dataRecente(Data d1, Data d2);
 int horaRecente(Hora h1, Hora h2);
+int dataIgual(Data d1, Data d2);
 int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2);
 Data datamaismais(Data d);
 int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2);
 
 int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 
+float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora, float valor_max_diario, int min_estadia);
+
+Registo_entradas* procura_matricula_parque(Parque *parque, char *matricula);
+Registo_entradas* altera_mat_registo_informacoes(Parque *parque, char *matricula, Data data_saida, Hora hora_saida);
+void atualiza_mat_hashtable_estado(HashTable *hashTable, char *matricula);
+
 
 void processar_input (HashTable *hashTable);
 void processar_parques();
 void processar_entradas(HashTable *hashTable);
+void processar_saidas(HashTable *hashTable);
 
 void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
 

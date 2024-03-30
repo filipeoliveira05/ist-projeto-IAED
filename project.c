@@ -51,7 +51,7 @@ void processar_input (HashTable *hashTable) {
                 processar_entradas(hashTable);
                 break;
             case 's':
-                //processar_saidas(hashTable);
+                processar_saidas(hashTable);
                 break;
             case 'f':
                 //código
@@ -424,7 +424,7 @@ int horaValida(Hora h) {
     return TRUE;
 }
 
-/*Retorna TRUE se d2 for mais recente que d1, FALSE caso contrário*/
+/*Retorna TRUE se d2 for mais recente ou igual a d1, FALSE caso contrário*/
 int dataRecente(Data d1, Data d2) {
     if (d1.a > d2.a)
         return FALSE;
@@ -439,7 +439,7 @@ int dataRecente(Data d1, Data d2) {
     return TRUE;
 }
 
-/*Retorna TRUE se h2 for mais recente que h1, FALSE caso contrário*/
+/*Retorna TRUE se h2 for mais recente ou igual a h1, FALSE caso contrário*/
 int horaRecente(Hora h1, Hora h2) {
     if (h1.h > h2.h)
         return FALSE;
@@ -450,12 +450,33 @@ int horaRecente(Hora h1, Hora h2) {
     return TRUE;
 }
 
-/*Retorna TRUE se o instante 2 é mais recente que o 1, FALSE caso contrário*/
-int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
-    if (dataRecente(d1, d2) && horaRecente(h1, h2) && dataValida(d2) && horaValida(h2))
+/* Retorna TRUE se as datas são iguais, FALSE caso contrário */
+int dataIgual(Data d1, Data d2) {
+    if (d1.a == d2.a && d1.m == d2.m && d1.d == d2.d)
         return TRUE;
-    else
+    return FALSE;
+}
+
+/* Retorna TRUE se o instante 2 é mais recente ou igual ao 1, FALSE caso contrário */
+int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
+    // Verifica se as datas e horas são válidas
+    if (!dataValida(d2) || !horaValida(h2))
         return FALSE;
+
+    // Verifica se o instante 2 é mais recente ou igual ao 1
+    if (dataRecente(d1, d2)) {
+        if (dataIgual(d1, d2)) {
+            // Se as datas são iguais, verifica as horas
+            if (horaRecente(h1, h2)) {
+                return TRUE;
+            }
+        } else {
+            // Se a data 2 é mais recente que a data 1, então é válida
+            return TRUE;
+        }
+    }
+    
+    return FALSE;
 }
 
 Data datamaismais(Data d) {
@@ -591,22 +612,24 @@ void processar_entradas(HashTable *hashTable) {
             else if (resultado == -3) {
                 printf("%s: invalid vehicle entry.\n", matricula);
             }
-
             
             else if (resultado == -4) {
                 printf("invalid date.\n");
             }
             
-
         } 
         
-        else {
+        else {  
             printf("%s: no such parking.\n", nome_parque);
         }
     }
 }
 
-/*
+
+
+
+//COMANDO s
+
 float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora, float valor_max_diario, int min_estadia) {
     const int min_por_dia = 24 * 60;
     const int min_por_periodo = 15;
@@ -625,10 +648,6 @@ float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora, float va
     
     return custo_total;
 }
-
-
-//COMANDO s
-
 
 
 Registo_entradas* procura_matricula_parque(Parque *parque, char *matricula) {
@@ -653,7 +672,34 @@ Registo_entradas* procura_matricula_parque(Parque *parque, char *matricula) {
     return NULL;
 }
 
-void atualiza_mat_hashtable_fora(HashTable *hashTable, char *matricula) {
+
+/*Atualiza o registo da matrícula na lista de entradas com as informações da saída do veículo*/
+Registo_entradas* altera_mat_registo_informacoes(Parque *parque, char *matricula, Data data_saida, Hora hora_saida) {
+    // Verifica se o parque é válido
+    if (parque == NULL) {
+        return NULL;
+    }
+
+    // Percorre a lista de registros de entrada do parque
+    Registo_entradas *atual = parque->entradas;
+    while (atual != NULL) {
+        // Compara a matrícula atual com a matrícula procurada
+        if (strcmp(atual->matricula, matricula) == 0) {
+            //Atualiza as informações do veículo em questão
+            atual->estado = CONECTADO;
+            atual->data_saida = data_saida;
+            atual->hora_saida = hora_saida;
+        }
+        // Passa para o próximo registro
+        atual = atual->next;
+    }
+
+    // Retorna NULL se a matrícula não for encontrada
+    return NULL;
+}
+
+/*Atualiza o estado da matrícula na hashtable para FORA*/
+void atualiza_mat_hashtable_estado(HashTable *hashTable, char *matricula) {
     // Calcula o índice da matrícula na tabela hash
     int index = hash(matricula);
 
@@ -681,7 +727,7 @@ int insere_saida_parque(Parque *parque, char *matricula, Data data, Hora hora, H
         return -1;
     }
 
-    // Verifica se o carro está dentro do parque
+    // Verifica se o carro está fora do parque
     nodeHASH *estado_matricula = procura_na_hastable(hashTable, matricula);
     if (estado_matricula != NULL && estado_matricula->estado == FORA) {
         return -2;
@@ -692,23 +738,22 @@ int insere_saida_parque(Parque *parque, char *matricula, Data data, Hora hora, H
         return -3;
     }
 
-
     // Alocar memória para o novo registro
-    Registo_saidas *novo_registo = malloc(sizeof(Registo_saidas));
-    if (novo_registo == NULL) {
+    Registo_saidas *novo_registo_saida = malloc(sizeof(Registo_saidas));
+    if (novo_registo_saida == NULL) {
         perror("Memory allocation error");
         exit(EXIT_FAILURE);
     }
 
     // Preencher os dados do novo registro
-    strcpy(novo_registo->matricula, matricula);
-    novo_registo->data = data;
-    novo_registo->hora = hora;
-    novo_registo->next = NULL;
+    strcpy(novo_registo_saida->matricula, matricula);
+    novo_registo_saida->data = data;
+    novo_registo_saida->hora = hora;
+    novo_registo_saida->next = NULL;
 
-    // Inserir o novo registro na lista de entradas do parque
+    // Inserir o novo registro na lista de saidas do parque
     if (parque->saidas == NULL) {
-        parque->saidas = novo_registo;
+        parque->saidas = novo_registo_saida;
     } else {
         // Percorrer a lista até o último nó
         Registo_saidas *atual = parque->saidas;
@@ -716,18 +761,20 @@ int insere_saida_parque(Parque *parque, char *matricula, Data data, Hora hora, H
             atual = atual->next;
         }
         // Adicionar o novo registro no final da lista
-        atual->next = novo_registo;
+        atual->next = novo_registo_saida;
     }
 
+    // Atualiza as informações do registro de entrada com a saída do veículo
+    altera_mat_registo_informacoes(parque, matricula, data, hora);
+
     // Atualizar o estado do veículo para FORA na hashtable de matrículas
-    atualiza_mat_hashtable_fora(hashTable, matricula);
+    atualiza_mat_hashtable_estado(hashTable, matricula);
 
     // Aumentar em 1 o número de lugares disponíveis
     parque->lugares_disponiveis++;
 
     //Atualiza o tempo atual
-    data_atual = data;
-    hora_atual = hora;
+    atualizar_tempo(&data_atual, &hora_atual, data, hora);
 
     return 0;
 }
@@ -749,10 +796,10 @@ void processar_saidas(HashTable *hashTable) {
         Hora hora_saida;
 
         // Converte a data de saída para o formato desejado
-        sscanf(argumentos[3], "%d-%d-%d", &data_saida.d, &data_saida.m, &data_saida.a);
+        sscanf(argumentos[2], "%d-%d-%d", &data_saida.d, &data_saida.m, &data_saida.a);
         
         // Converte a hora de saída para o formato desejado
-        sscanf(argumentos[4], "%d:%d", &hora_saida.h, &hora_saida.min);
+        sscanf(argumentos[3], "%d:%d", &hora_saida.h, &hora_saida.min);
 
         // Verifica se o parque existe
         int indice_parque = parque_existe(nome_parque);
@@ -760,14 +807,23 @@ void processar_saidas(HashTable *hashTable) {
             // Obtém o parque
             Parque *parque = &stored_parques[indice_parque - 1];
             
-            
             int resultado = insere_saida_parque(parque, matricula, data_saida, hora_saida, hashTable);
             if (resultado == 0) {
-                // Imprime a informação sobre o parque após cada saida.
-                //int minutos_estadia = calcula_minutos_entre_datas(data_entrada, hora_entrada, data_saida, hora_saida);
-                //float custo_estadia = calcular_custo_estadia(parque->valor_15, parque->valor_15_apos_1hora, parque->valor_max_diario, minutos_estadia);
+                Registo_entradas *registro = procura_matricula_parque(parque, matricula);
 
-                //printf("%s %s %s %s %s %.2f\n", parque->nome_parque, data_entrada, hora_entrada, data_saida, hora_saida, custo_estadia);
+                Data data_entrada = registro->data;
+                Hora hora_entrada = registro->hora;
+                
+                int minutos_estadia = calcula_minutos_entre_datas(data_entrada, hora_entrada, data_saida, hora_saida);
+                float custo_estadia = calcular_custo_estadia(parque->valor_15, parque->valor_15_apos_1hora, parque->valor_max_diario, minutos_estadia);
+
+                // Imprime a informação sobre o parque após cada saida.
+                printf("%s %02d-%02d-%d %02d:%02d %02d-%02d-%d %02d:%02d %.2f\n", matricula,
+               data_entrada.d, data_entrada.m, data_entrada.a,
+               hora_entrada.h, hora_entrada.min,
+               registro->data_saida.d, registro->data_saida.m, registro->data_saida.a,
+               registro->hora_saida.h, registro->hora_saida.min,
+               custo_estadia);
             }
             
             else if (resultado == -1) {
@@ -788,7 +844,7 @@ void processar_saidas(HashTable *hashTable) {
     }
 }
 
-*/
+
 
 
 //vamos procurar muitas vezes as entradas e saidas dos carros
@@ -837,7 +893,7 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 - Corrigir atualização da hora/data atual
 
 //COMANDO s
-- Quando sai um carro, adicionar no registo de saidas desse parque e alterar o estado do carro no registo de entradas para CONECTADO
+- Quando sai um carro, adicionar no registo de saidas desse parque e ->>>alterar o estado do carro no registo de entradas para CONECTADO
 
 //COMANDO v
 - Ordenar primeiro a lista de parques pelo nome
