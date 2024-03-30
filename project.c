@@ -453,23 +453,25 @@ int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
 int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
     
     // Verifica se o parque está cheio
-            if (parque->lugares_disponiveis <= 0) {
-                return -1;
-            }
+    if (parque->lugares_disponiveis <= 0) {
+        return -1;
+    }
 
-            // Verifica se a matrícula é válida
-            if (!matricula_valida(matricula)) {
-                return -2;
-            }
+    // Verifica se a matrícula é válida
+    if (!matricula_valida(matricula)) {
+        return -2;
+    }
 
-            if (procura_na_hastable(hashTable, matricula)) {
-                return -3;
-            }
-            
-            // Verifica se a data e hora são válidas
-            if (!data_hora_valida_e_recente(data_atual, hora_atual, data, hora)) {
-                return -4;
-            }
+    // Verifica se o carro já está dentro de um parque
+    nodeHASH *estado_matricula = procura_na_hastable(hashTable, matricula);
+    if (estado_matricula != NULL && estado_matricula->estado == DENTRO) {
+        return -3;
+    }
+    
+    // Verifica se a data e hora são válidas
+    if (!data_hora_valida_e_recente(data_atual, hora_atual, data, hora)) {
+        return -4;
+    }
             
 
     // Alocar memória para o novo registro
