@@ -20,12 +20,15 @@
 #define DENTRO 1
 #define FORA 0
 
+#define CONECTADO 1
+#define LIVRE 0
+
 /*Máximo de caracteres num input*/
 #define BUFSIZ 8192
 #define MAX_INPUT BUFSIZ
 
 /*Tamanho hash table*/
-#define TABLE_SIZE 100
+#define TABLE_SIZE 103
 
 /*Número máximo de argumentos em qualquer comando*/
 #define MAX_ARGUMENTOS 5
@@ -46,12 +49,25 @@ typedef struct {
 } Hora;
 
 
-typedef struct registo {
+typedef struct registo_e {
     char matricula[MAX_INPUT];
     Data data;
     Hora hora;
-    struct registo *next;
-} Registo;
+    Data data_saida;
+    Hora hora_saida;
+    int estado;
+    struct registo_e *next;
+} Registo_entradas;
+
+
+typedef struct registo_s {
+    char matricula[MAX_INPUT];
+    Data data;
+    Hora hora;
+    int estado;
+    float custo;
+    struct registo_s *next;
+} Registo_saidas;
 
 /*Estrutura Parque*/
 typedef struct {
@@ -61,8 +77,8 @@ typedef struct {
     float valor_15;
     float valor_15_apos_1hora;
     float valor_max_diario;
-    Registo *entradas;
-    Registo *saidas;
+    Registo_entradas *entradas;
+    Registo_saidas *saidas;
 } Parque;
 
 
@@ -86,7 +102,6 @@ typedef struct node{
 typedef struct nodeHashTable {
     int estado;
     char *matricula;
-    //nodeENTRADAS * ult_lugar;
     struct nodeHashTable *next;
 } nodeHASH;
 
@@ -118,11 +133,14 @@ int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor
 
 
 int matricula_valida(char *matricula);
+int diaFinalMes (int m);
 int dataValida(Data d);
 int horaValida(Hora h);
 int dataRecente(Data d1, Data d2);
 int horaRecente(Hora h1, Hora h2);
 int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2);
+Data datamaismais(Data d);
+int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2);
 
 int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
 
