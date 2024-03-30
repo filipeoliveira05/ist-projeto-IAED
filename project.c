@@ -13,8 +13,8 @@ int N_parques = 0;
 Parque stored_parques[MAX_PARQUES];
 
 /*Tempo atual*/
-Data data_atual;
-Hora hora_atual;
+Data data_atual = {0};
+Hora hora_atual = {0};
 
 
 int main () {
@@ -465,12 +465,12 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
             if (procura_na_hastable(hashTable, matricula)) {
                 return -3;
             }
-            /*
+            
             // Verifica se a data e hora são válidas
             if (!data_hora_valida_e_recente(data_atual, hora_atual, data, hora)) {
                 return -4;
             }
-            */
+            
 
     // Alocar memória para o novo registro
     Registo *novo_registo = malloc(sizeof(Registo));
@@ -503,6 +503,10 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
 
     // Subtrair 1 do número de lugares disponíveis
     parque->lugares_disponiveis--;
+
+    //Atualiza o tempo atual
+    data_atual = data;
+    hora_atual = hora;
 
     return 0;
 }
