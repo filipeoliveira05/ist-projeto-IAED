@@ -54,7 +54,7 @@ void processar_input (HashTable *hashTable) {
                 processar_saidas(hashTable);
                 break;
             case 'v':
-                //código
+                processar_comando_v();
                 break;
             case 'f':
                 processar_faturacao();
@@ -962,13 +962,67 @@ void processar_faturacao() {
 }
 
 
+
+
+void mostrar_registros_veiculo(char *matricula) {
+    int encontrou_registros = 0; // Flag para indicar se foram encontrados registros do veículo
+    // Percorre todos os parques
+    for (int i = 0; i < N_parques; i++) {
+        Parque *parque = &stored_parques[i];
+        // Procura por entradas e saídas do veículo no parque atual
+        Registo_entradas *registro = parque->entradas;
+        while (registro != NULL) {
+            // Se encontrou um registro do veículo, imprime as informações
+            if (strcmp(registro->matricula, matricula) == 0) {
+                encontrou_registros = 1;
+                printf("%s %02d-%02d-%d %02d:%02d", parque->nome_parque, registro->data.d, registro->data.m, registro->data.a, registro->hora.h, registro->hora.min);
+                // Se o veículo está atualmente dentro do parque, não mostra a data e hora de saída
+                if (registro->estado == LIVRE) {
+                    printf("\n");
+                } else {
+                    printf(" %02d-%02d-%d %02d:%02d\n", registro->data_saida.d, registro->data_saida.m, registro->data_saida.a, registro->hora_saida.h, registro->hora_saida.min);
+                }
+            }
+            registro = registro->next;
+        }
+    }
+    // Se nenhum registro foi encontrado, imprime mensagem de erro
+    if (!encontrou_registros) {
+        printf("%s: no entries found in any parking.\n", matricula);
+    }
+}
+
+void processar_comando_v() {
+    char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
+    int n_argumentos;
+    // Lê a linha de comando
+    leLinha(argumentos, &n_argumentos);
+
+    char *matricula = argumentos[0];
+
+    // Verifica se a matrícula é válida
+    if (!matricula_valida(matricula)) {
+        printf("%s: invalid licence plate.\n", matricula);
+        return;
+    }
+
+    // Chama a função para mostrar os registros do veículo
+    mostrar_registros_veiculo(matricula);
+}
+
+
+
+
+
+
+
 //vamos procurar muitas vezes as entradas e saidas dos carros.
 //começar por onde da speed up e usar tabelas de dispersão
 
 //hastables para entradas e saidas
 
 
-
+/*FUNÇÕES PARA LIBERTAR MEMÓRIA*/
 void liberta_hashtable(HashTable *hashTable) {
     if (hashTable == NULL) {
         return;
@@ -988,11 +1042,32 @@ void liberta_hashtable(HashTable *hashTable) {
 }
 
 /*
+void destroy_node_entradas(Registo_entradas *registo) {
+    if (registo != NULL) {
+        destroy_node_entradas(registo->next);
+        free(registo->matricula);
+        registo->matricula = NULL;
+        free(registo);
+        registo = NULL;
+    }
+}
+
+void destroy_node_saidas(Registo_saidas *registo) {
+    if (registo != NULL) {
+        destroy_node_saidas(registo->next);
+        free(registo->matricula);
+        registo->matricula = NULL;
+        free(registo);
+        registo = NULL;
+    }
+}
+
 void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
     for (int i = 0; i < MAX_PARQUES; i++) {
         free(stored_parques[i].nome_parque);
         stored_parques[i].nome_parque = NULL;
-        destroy_node_entradas(stored_parques[i].)
+        destroy_node_entradas(stored_parques[i].head_ent);
+        destroy_node_saidas(stored_parques[i].head_sai);
     }
 
     liberta_hashtable(hashTable);
