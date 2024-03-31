@@ -170,7 +170,7 @@ int length(Node *head) {
 
 
 /*Verifica se um determinado parque já existe no sistema.
-Se existir retorna o índice do parque, caso contrário retorna 0.*/
+Se existir retorna o índice do parque, cc retorna 0.*/
 int parque_existe(char nome_parque[]) {
     int i;
    
@@ -424,7 +424,7 @@ int horaValida(Hora h) {
     return TRUE;
 }
 
-/*Retorna TRUE se d2 for mais recente ou igual a d1, FALSE caso contrário*/
+/*Retorna TRUE se d2 for mais recente ou igual a d1, FALSE cc*/
 int dataRecente(Data d1, Data d2) {
     if (d1.a > d2.a)
         return FALSE;
@@ -439,7 +439,7 @@ int dataRecente(Data d1, Data d2) {
     return TRUE;
 }
 
-/*Retorna TRUE se h2 for mais recente ou igual a h1, FALSE caso contrário*/
+/*Retorna TRUE se h2 for mais recente ou igual a h1, FALSE cc*/
 int horaRecente(Hora h1, Hora h2) {
     if (h1.h > h2.h)
         return FALSE;
@@ -450,14 +450,14 @@ int horaRecente(Hora h1, Hora h2) {
     return TRUE;
 }
 
-/* Retorna TRUE se as datas são iguais, FALSE caso contrário */
+/* Retorna TRUE se d1 é igual a d2, FALSE cc */
 int dataIgual(Data d1, Data d2) {
     if (d1.a == d2.a && d1.m == d2.m && d1.d == d2.d)
         return TRUE;
     return FALSE;
 }
 
-/* Retorna TRUE se o instante 2 é mais recente ou igual ao 1, FALSE caso contrário */
+/* Retorna TRUE se o instante 2 é mais recente ou igual ao 1, FALSE cc */
 int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
     // Verifica se as datas e horas são válidas
     if (!dataValida(d2) || !horaValida(h2))
@@ -479,6 +479,7 @@ int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
     return FALSE;
 }
 
+/*Retorna o dia seguinte a uma determinada data*/
 Data datamaismais(Data d) {
     d.d++;
     int diasmes = diaFinalMes(d.m);
@@ -493,6 +494,7 @@ Data datamaismais(Data d) {
     return (Data){d.d, d.m, d.a};
 }
 
+/*Retorna o número de minutos que passaram entre dois instantes de tempo*/
 int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2) {
     int diasinc = 0;
     
@@ -507,7 +509,6 @@ int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2) {
 
 
 int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable) {
-    
     // Verifica se o parque está cheio
     if (parque->lugares_disponiveis <= 0) {
         return -1;
@@ -530,7 +531,6 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
         return -4;
     }
      
-
     // Alocar memória para o novo registro
     Registo_entradas *novo_registo = malloc(sizeof(Registo_entradas));
     if (novo_registo == NULL) {
@@ -560,10 +560,8 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
 
     // Atualizar o estado do veículo para DENTRO na hashtable de matrículas
     insere_mat_hashtable(hashTable, matricula);
-
     // Subtrair 1 do número de lugares disponíveis
     parque->lugares_disponiveis--;
-
     atualizar_tempo(&data_atual, &hora_atual, data, hora);
 
     return 0;
