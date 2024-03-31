@@ -667,7 +667,7 @@ float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora,
 
 
 /* Procura pelo registro de entrada mais recente de uma matrícula específica */
-Registo_entradas* procura_matricula_parque(Parque *parque, char *matricula) {
+Registo_entradas* procura_matricula_parque_recente(Parque *parque, char *matricula) {
     // Verifica se o parque é válido e se há registros de entrada
     if (parque == NULL || parque->entradas == NULL) {
         return NULL;
@@ -835,7 +835,7 @@ void processar_saidas(HashTable *hashTable) {
             int resultado = insere_saida_parque(parque, matricula, data_saida,
                                                 hora_saida, hashTable);
             if (resultado == 0) {
-                Registo_entradas *registro = procura_matricula_parque(parque, matricula);
+                Registo_entradas *registro = procura_matricula_parque_recente(parque, matricula);
 
                 Data data_entrada = registro->data;
                 Hora hora_entrada = registro->hora;
@@ -1017,10 +1017,6 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 --> Se estado == LIVRE, então imprime só data/hora entrada
 
 //COMANDO f
-- Com um argumento: Iterar pelos registos de saida do parque e somar todos os custos associados à mesma data. Imrpimir data e custo nessa data.
-- Com dois argumentos: Iterar pelos registos de saida do parque e ir somando o parâmetro custo de todas os nos da data específica.
-Erros:
-- parque_existe()
-- Data inválida: dataRecente() e dataValida()
+- 
 
 */
