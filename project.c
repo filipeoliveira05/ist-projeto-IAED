@@ -962,7 +962,7 @@ void processar_faturacao() {
 }
 
 
-//vamos procurar muitas vezes as entradas e saidas dos carros
+//vamos procurar muitas vezes as entradas e saidas dos carros.
 //começar por onde da speed up e usar tabelas de dispersão
 
 //hastables para entradas e saidas
