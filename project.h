@@ -169,6 +169,8 @@ void mostrar_faturacao_diaria(char *nome_parque, Data data_pesquisa);
 void mostrar_faturacao_total(char *nome_parque);
 void processar_faturacao();
 
+void merge(int arr[], int l, int m, int r, Parque stored_parques[MAX_PARQUES]);
+void mergeSort(int arr[], int l, int r, Parque stored_parques[MAX_PARQUES]);
 void processar_comando_v();
 void mostrar_registros_veiculo(char *matricula);
 
