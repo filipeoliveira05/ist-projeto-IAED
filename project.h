@@ -71,6 +71,7 @@ typedef struct registo_s {
     struct registo_s *next;
 } Registo_saidas;
 
+
 /*Estrutura Parque*/
 typedef struct {
     char nome_parque[BUFSIZ];
@@ -82,22 +83,6 @@ typedef struct {
     Registo_entradas *entradas;
     Registo_saidas *saidas;
 } Parque;
-
-
-/*Estrutura Carro*/
-typedef struct {
-    char nome_parque[BUFSIZ];
-    char matricula;
-    Data data;
-    Hora hora; 
-} Carro;
-
-
-/*Estrutura da lista ligada*/
-typedef struct node{
-    int id;
-    struct node *next;
-} Node;
 
 
 /*Estrutura da Hash Table*/
@@ -117,21 +102,15 @@ typedef struct HashTable {
 //void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
 void leLinha(char list_of_words[][MAX_INPUT], int *argumentos);
 
-Node *insert_begin(Node *head, int new_id);
-Node *insert_end(Node *tail, int new_id);
-Node *remove_node(Node *head, Node *node_to_remove);
-int length(Node *head);
-
 nodeHASH *cria_node_matricula(char *matricula);
 HashTable *cria_HashTable();
 unsigned long hash(char *matricula);
 void insere_mat_hashtable(HashTable *hashTable, char *matricula);
 nodeHASH *procura_na_hastable(HashTable *hashTable, char *matricula);
-void print_hashtable(HashTable *hashTable);
 
 int parque_existe(char nome_parque[]);
-Parque obter_parque_por_id (int id);
-int criar_parque(char nome_parque[], int capacidade, float valor_15, float valor_15_apos_1hora, float valor_max_diario);
+int criar_parque(char nome_parque[], int capacidade, float valor_15,
+                 float valor_15_apos_1hora, float valor_max_diario);
 
 
 int matricula_valida(char *matricula);
@@ -146,15 +125,19 @@ int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2);
 Data datamaismais(Data d);
 int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2);
 
-int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora, HashTable *hashTable);
+int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
+                          HashTable *hashTable);
 
-float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora, float valor_max_diario, int min_estadia);
+float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora,
+                            float valor_max_diario, int min_estadia);
 
-Registo_entradas* procura_matricula_parque_recente(Parque *parque, char *matricula);
-Registo_entradas* altera_mat_registo_infosaida(Parque *parque, char *matricula, Data data_saida, Hora hora_saida);
-void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable, char *matricula);
+Registo_entradas* procura_mat_parque_recente(Parque *parque, char *matricula);
+Registo_entradas* altera_mat_registo_infosaida(Parque *parque, char *matricula,
+                                               Data data_saida,Hora hora_saida);
+void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable,char *matricula);
 void atualiza_mat_hashtable_estado_fora(HashTable *hashTable, char *matricula);
-void atualizar_custo_registro_saida(Parque *parque, char *matricula, Data data, Hora hora, float novo_custo);
+void atualizar_custo_registro_saida(Parque *parque, char *matricula, Data data,
+                                    Hora hora, float novo_custo);
 
 
 void processar_input (HashTable *hashTable);
