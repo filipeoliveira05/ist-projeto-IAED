@@ -150,7 +150,7 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
 
 float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora, float valor_max_diario, int min_estadia);
 
-Registo_entradas* procura_matricula_parque(Parque *parque, char *matricula);
+Registo_entradas* procura_matricula_parque_recente(Parque *parque, char *matricula);
 Registo_entradas* altera_mat_registo_infosaida(Parque *parque, char *matricula, Data data_saida, Hora hora_saida);
 void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable, char *matricula);
 void atualiza_mat_hashtable_estado_fora(HashTable *hashTable, char *matricula);
