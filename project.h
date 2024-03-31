@@ -141,6 +141,7 @@ int horaValida(Hora h);
 int dataRecente(Data d1, Data d2);
 int horaRecente(Hora h1, Hora h2);
 int dataIgual(Data d1, Data d2);
+int horaIgual(Hora h1, Hora h2);
 int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2);
 Data datamaismais(Data d);
 int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2);
@@ -150,8 +151,10 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data, Hora hora,
 float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora, float valor_max_diario, int min_estadia);
 
 Registo_entradas* procura_matricula_parque(Parque *parque, char *matricula);
-Registo_entradas* altera_mat_registo_informacoes(Parque *parque, char *matricula, Data data_saida, Hora hora_saida);
-void atualiza_mat_hashtable_estado(HashTable *hashTable, char *matricula);
+Registo_entradas* altera_mat_registo_infosaida(Parque *parque, char *matricula, Data data_saida, Hora hora_saida);
+void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable, char *matricula);
+void atualiza_mat_hashtable_estado_fora(HashTable *hashTable, char *matricula);
+void atualizar_custo_registro_saida(Parque *parque, char *matricula, Data data, Hora hora, float novo_custo);
 
 
 void processar_input (HashTable *hashTable);
@@ -160,5 +163,10 @@ void processar_entradas(HashTable *hashTable);
 void processar_saidas(HashTable *hashTable);
 
 void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
+void liberta_hashtable(HashTable *hashTable);
+
+void mostrar_faturacao_diaria(char *nome_parque, Data data_pesquisa);
+void mostrar_faturacao_total(char *nome_parque);
+void processar_faturacao();
 
 #endif
