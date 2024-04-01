@@ -60,7 +60,7 @@ void processar_input (HashTable *hashTable) {
                 processar_faturacao();
                 break;
             case 'r':
-                //código
+                processar_comando_r(hashTable);
                 break;
         }
     }
@@ -879,7 +879,7 @@ void merge(int arr[], int l, int m, int r, Parque stored_parques[MAX_PARQUES]){
     int n2 = r - m;
 
     // Cria arrays temporários
-    int L[MAX_PARQUES], R[MAX_PARQUES];
+    int L[n1], R[n2];
     
     // Copia os dados para os arrays temporários L[] e R[]
     for (i = 0; i < n1; i++)
@@ -934,7 +934,7 @@ void mergeSort(int arr[], int l, int r, Parque stored_parques[MAX_PARQUES]) {
 
 
 void mostrar_registros_veiculo(char *matricula) {
-    int encontrou_registros = 0;
+    int encontrou_registros = FALSE;
     int indices_parques[N_parques];
     
     // Preenche o array de índices com os índices dos parques
@@ -951,7 +951,7 @@ void mostrar_registros_veiculo(char *matricula) {
         while (registro != NULL) {
             // Se encontrou um registro do veículo, imprime as informações
             if (strcmp(registro->matricula, matricula) == 0) {
-                encontrou_registros = 1;
+                encontrou_registros = TRUE;
                 printf("%s %02d-%02d-%d %02d:%02d", parque->nome_parque, 
                        registro->data.d, registro->data.m, registro->data.a,
                        registro->hora.h, registro->hora.min);
@@ -976,23 +976,109 @@ void mostrar_registros_veiculo(char *matricula) {
 void processar_comando_v() {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
     int n_argumentos;
-    // Lê a linha de comando
+
     leLinha(argumentos, &n_argumentos);
 
-    char *matricula = argumentos[0];
+    if (n_argumentos == 1) {
+        char *matricula = argumentos[0];
 
-    // Verifica se a matrícula é válida
-    if (!matricula_valida(matricula)) {
-        printf("%s: invalid licence plate.\n", matricula);
-        return;
+        // Verifica se a matrícula é válida
+        if (!matricula_valida(matricula)) {
+            printf("%s: invalid licence plate.\n", matricula);
+            return;
+        }
+
+        // Chama a função para mostrar os registros do veículo
+        mostrar_registros_veiculo(matricula);
     }
-
-    // Chama a função para mostrar os registros do veículo
-    mostrar_registros_veiculo(matricula);
 }
 
 
 
+/*
+//COMANDO r
+- parque_existe() para o erro "<nome-parque>: no such parking."
+- iterar pela lista de parques até encontrar o que se quer remover
+- Apagar todos os elementos da listas ligadas de registos de entrada e de saída
+- Apagar o parque da lista de parques
+*/
+
+
+
+void remover_registros_entradas_parque(Parque *parque, HashTable *hashTable) {
+    Registo_entradas *atual = parque->entradas;
+    while (atual != NULL) {
+        Registo_entradas *temp = atual;
+        atual = atual->next;
+        atualiza_mat_hashtable_estado_fora(hashTable, temp->matricula);
+        free(temp);
+    }
+    parque->entradas = NULL;
+}
+
+void remover_registros_saidas_parque(Parque *parque) {
+    Registo_saidas *atual = parque->saidas;
+    while (atual != NULL) {
+        Registo_saidas *temp = atual;
+        atual = atual->next;
+        free(temp);
+    }
+    parque->saidas = NULL;
+}
+
+void remover_parque_sistema(int indice) {
+    for (int i = indice; i < N_parques - 1; i++) {
+        stored_parques[i] = stored_parques[i + 1];
+    }
+    N_parques--;
+}
+
+
+void remove_cenas(char *nome_parque, HashTable *hashTable) {
+    int indice_parque = parque_existe(nome_parque);
+    if (indice_parque) {
+        // Remover todas as entradas associadas a este parque
+        remover_registros_entradas_parque(&stored_parques[indice_parque - 1], hashTable);
+        // Remover todas as saídas associadas a este parque
+        remover_registros_saidas_parque(&stored_parques[indice_parque - 1]);
+        // Remover o parque da lista de parques do sistema
+        remover_parque_sistema(indice_parque - 1);
+
+        int indices_parques[N_parques];
+    
+        // Preenche o array de índices com os índices dos parques
+        for (int i = 0; i < N_parques; i++) {
+            indices_parques[i] = i;
+        }
+
+        // Ordena os índices dos parques pelo nome do parque
+        mergeSort(indices_parques, 0, N_parques - 1, stored_parques);
+
+        for (int i = 0; i < N_parques; i++) {
+            Parque *parque = &stored_parques[indices_parques[i]];
+            printf("%s\n", parque->nome_parque);
+        }
+        
+    } else {
+        printf("%s: no such parking.\n", nome_parque);
+    }
+}
+
+
+
+void processar_comando_r(HashTable *hashTable) {
+    char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
+    int n_argumentos;
+
+    leLinha(argumentos, &n_argumentos);
+
+    if (n_argumentos == 1) {
+        char *nome_parque = argumentos[0];
+
+        remove_cenas(nome_parque, hashTable);
+    }
+
+}
 
 
 
@@ -1111,6 +1197,7 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 //GERAL
 - Mudar comentários pré-função
 - Rever comentários dentro de funções
+- Mudar nome de funções para ser mais claro
 - Formatação dos if e else
 
 */
