@@ -19,7 +19,7 @@ Hora hora_atual = {0, 0};
 int main () {
     HashTable *hashTable = cria_HashTable();
     processar_input(hashTable);
-    liberta(hashTable);
+    liberta_hashtable(hashTable);
     return 0;
 }
 
@@ -879,7 +879,7 @@ void merge(int arr[], int l, int m, int r, Parque stored_parques[MAX_PARQUES]){
     int n2 = r - m;
 
     // Cria arrays temporários
-    int L[n1], R[n2];
+    int L[MAX_PARQUES], R[MAX_PARQUES];
     
     // Copia os dados para os arrays temporários L[] e R[]
     for (i = 0; i < n1; i++)
@@ -1016,7 +1016,7 @@ void liberta_hashtable(HashTable *hashTable) {
     free(hashTable);
 }
 
-
+/*
 void liberta_registros_entradas(Registo_entradas *entrada) {
     Registo_entradas *atual = entrada;
     Registo_entradas *proximo;
@@ -1054,7 +1054,7 @@ void liberta(HashTable *hashTable) {
 
     liberta_hashtable(hashTable);
 }
-
+*/
 
 
 /*
