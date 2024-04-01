@@ -157,4 +157,10 @@ void mergeSort(int arr[], int l, int r, Parque stored_parques[MAX_PARQUES]);
 void processar_comando_v();
 void mostrar_registros_veiculo(char *matricula);
 
+void liberta_hashtable(HashTable *hashTable);
+void liberta_registros_entradas(Registo_entradas *entrada);
+void liberta_registros_saidas(Registo_saidas *saida);
+void liberta_parque(Parque *parque);
+void liberta(HashTable *hashTable);
+
 #endif

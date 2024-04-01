@@ -19,7 +19,7 @@ Hora hora_atual = {0, 0};
 int main () {
     HashTable *hashTable = cria_HashTable();
     processar_input(hashTable);
-    liberta_hashtable(hashTable);
+    liberta(hashTable);
     return 0;
 }
 
@@ -502,7 +502,6 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data,
     atualiza_mat_hashtable_estado_dentro(hashTable, matricula);
     parque->lugares_disponiveis--;
     atualizar_tempo(&data_atual, &hora_atual, data, hora);
-
     return 0;
 }
 
@@ -998,12 +997,6 @@ void processar_comando_v() {
 
 
 
-//vamos procurar muitas vezes as entradas e saidas dos carros.
-//começar por onde da speed up e usar tabelas de dispersão
-
-//hastables para entradas e saidas
-
-
 /*FUNÇÕES PARA LIBERTAR MEMÓRIA*/
 void liberta_hashtable(HashTable *hashTable) {
     if (hashTable == NULL) {
@@ -1022,6 +1015,47 @@ void liberta_hashtable(HashTable *hashTable) {
 
     free(hashTable);
 }
+
+
+void liberta_registros_entradas(Registo_entradas *entrada) {
+    Registo_entradas *atual = entrada;
+    Registo_entradas *proximo;
+
+    while (atual != NULL) {
+        proximo = atual->next; // Salva o próximo nó antes de liberar o atual
+        free(atual); // Libera a memória do nó atual
+        atual = proximo; // Move para o próximo nó
+    }
+}
+
+void liberta_registros_saidas(Registo_saidas *saida) {
+    Registo_saidas *atual = saida;
+    Registo_saidas *proximo;
+
+    while (atual != NULL) {
+        proximo = atual->next; // Salva o próximo nó antes de liberar o atual
+        free(atual); // Libera a memória do nó atual
+        atual = proximo; // Move para o próximo nó
+    }
+}
+
+void liberta_parque(Parque *parque) {
+    liberta_registros_entradas(parque->entradas);
+    liberta_registros_saidas(parque->saidas);
+    free(parque);
+}
+
+
+void liberta(HashTable *hashTable) {
+    for (int i = 0; i < N_parques; i++) {
+        Parque *parque = &stored_parques[i];
+        liberta_parque(parque);
+    }
+
+    liberta_hashtable(hashTable);
+}
+
+
 
 /*
 void destroy_node_entradas(Registo_entradas *registo) {
@@ -1044,6 +1078,7 @@ void destroy_node_saidas(Registo_saidas *registo) {
     }
 }
 
+
 void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
     for (int i = 0; i < MAX_PARQUES; i++) {
         free(stored_parques[i].nome_parque);
@@ -1062,16 +1097,20 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 /* CENAS PARA FAZER
 
 
-//COMANDO v
-- Ordenar primeiro a lista de parques pelo nome
-- Iterar pelo registo de entradas de cada parque e filtrar pela matrícula
---> Se estado == CONECTADO, então imprime data/hora entrada e data/hora saida
---> Se estado == LIVRE, então imprime só data/hora entrada
+//COMANDO r
+- parque_existe() para o erro "<nome-parque>: no such parking."
+- iterar pela lista de parques até encontrar o que se quer remover
+- Apagar todos os elementos da listas ligadas de registos de entrada e de saída
+- Apagar o parque da lista de parques
 
-//COMANDO f
-- 
+//MEMÓRIA
+- perror("Memory allocation error");
+- Alocar memória dinamicamente para matriculas, nome dos parques e listas ligadas de registos
+- Free das matricuals, nome dos parques e listas ligadas de registos
 
 //GERAL
-- perror("Memory allocation error");
+- Mudar comentários pré-função
+- Rever comentários dentro de funções
+- Formatação dos if e else
 
 */
