@@ -1,8 +1,8 @@
-/*
-    Ficheiro: project.h
-    Autor: Filipe Oliveira (ist1110633)
-    Descrição: Ficheiro com as estruturas de dados e funções utilizadas no 
-               ficheiro project.c
+/**
+ *Descrição: Ficheiro com as estruturas de dados e funções utilizadas no 
+             ficheiro project.c
+ * @file project.h
+ * @author ist1110633 Filipe Oliveira
 */
 
 #ifndef MAIN_H
@@ -100,13 +100,13 @@ typedef struct HashTable {
 /*Funções utilizadas*/
 
 //void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
-void leLinha(char list_of_words[][MAX_INPUT], int *argumentos);
+void le_input(char list_of_words[][MAX_INPUT], int *argumentos);
 
 nodeHASH *cria_node_matricula(char *matricula);
 HashTable *cria_HashTable();
 unsigned long hash(char *matricula);
 void insere_mat_hashtable(HashTable *hashTable, char *matricula);
-nodeHASH *procura_na_hastable(HashTable *hashTable, char *matricula);
+nodeHASH *procura_mat_na_hastable(HashTable *hashTable, char *matricula);
 
 int parque_existe(char nome_parque[]);
 int criar_parque(char nome_parque[], int capacidade, float valor_15,
