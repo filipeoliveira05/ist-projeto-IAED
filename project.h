@@ -148,8 +148,8 @@ void processar_saidas(HashTable *hashTable);
 void atualizar_tempo(Data *data, Hora *hora, Data nova_data, Hora nova_hora);
 void liberta_hashtable(HashTable *hashTable);
 
-void mostrar_faturacao_diaria(char *nome_parque, Data data_pesquisa);
-void mostrar_faturacao_total(char *nome_parque);
+void mostrar_faturacao_determinado_dia(char *nome_parque, Data data_pesquisa);
+void mostrar_faturacao_diaria(char *nome_parque);
 void processar_faturacao();
 
 void merge(int arr[], int l, int m, int r, Parque stored_parques[MAX_PARQUES]);
@@ -157,10 +157,10 @@ void mergeSort(int arr[], int l, int r, Parque stored_parques[MAX_PARQUES]);
 void processar_comando_v();
 void mostrar_registros_veiculo(char *matricula);
 
-void remover_registros_entradas_parque(Parque *parque, HashTable *hashTable);
-void remover_registros_saidas_parque(Parque *parque);
-void remover_parque_sistema(int indice);
-void remove_cenas(char *nome_parque, HashTable *hashTable);
+void remove_registos_entradas_parque(Parque *parque, HashTable *hashTable);
+void remove_registos_saidas_parque(Parque *parque);
+void remove_parque(int indice);
+void remove_parque_e_registos(char *nome_parque, HashTable *hashTable);
 void processar_comando_r(HashTable *hashTable);
 
 void liberta_hashtable(HashTable *hashTable);
