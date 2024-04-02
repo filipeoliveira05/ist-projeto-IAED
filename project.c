@@ -33,7 +33,6 @@ Após cada entrada/saída bem sucedida é atualizado o tempo atual.
 */
 
 
-
 /*TERMOS E EXPRESSÕES USADAS AO LONGO DO PROJETO
 - cc: caso contrário.
 - mat: matrícula.
@@ -1118,7 +1117,8 @@ void merge(int arr[], int l, int m, int r, Parque stored_parques[MAX_PARQUES]){
     int n2 = r - m;
 
     //Cria arrays temporários
-    int L[n1], R[n2];
+    int *L = malloc(n1 * sizeof(int));
+    int *R = malloc(n2 * sizeof(int));
     
     //Copia os dados para os arrays temporários L[] e R[]
     for (i = 0; i < n1; i++)
@@ -1155,6 +1155,9 @@ void merge(int arr[], int l, int m, int r, Parque stored_parques[MAX_PARQUES]){
         j++;
         k++;
     }
+
+    free(L);
+    free(R);
 }
 
 

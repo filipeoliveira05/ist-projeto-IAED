@@ -31,7 +31,7 @@
 #define MAX_INPUT BUFSIZ
 
 /*Tamanho da hash table*/
-#define TABLE_SIZE 898
+#define TABLE_SIZE 1033
 
 /*Número máximo de argumentos em qualquer comando*/
 #define MAX_ARGUMENTOS 5
