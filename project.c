@@ -60,6 +60,7 @@ int main () {
     HashTable *hashTable = cria_HashTable();
     processar_input(hashTable);
     liberta_hashtable(hashTable);
+    liberar_todos_os_parques();
     return 0;
 }
 
@@ -1384,6 +1385,40 @@ void liberta_hashtable(HashTable *hashTable) {
 
     free(hashTable);
 }
+
+
+void liberar_registros_entradas_parque(Registo_entradas *lista_registros) {
+    Registo_entradas *atual = lista_registros;
+    while (atual != NULL) {
+        Registo_entradas *temp = atual;
+        atual = atual->next;
+        free(temp);
+    }
+}
+
+void liberar_registros_saidas_parque(Registo_saidas *registro_saida) {
+    Registo_saidas *atual = registro_saida;
+    while (atual != NULL) {
+        Registo_saidas *temp = atual;
+        atual = atual->next;
+        free(temp);
+    }
+}
+
+
+void liberar_todos_os_parques() {
+    for (int i = 0; i < N_parques; i++) {
+        // Libera os registros de saída do parque
+        liberar_registros_saidas_parque(stored_parques[i].saidas);
+        stored_parques[i].saidas = NULL;
+
+        // Libera os registros de entrada do parque
+        liberar_registros_entradas_parque(stored_parques[i].entradas);
+        stored_parques[i].entradas = NULL;
+    }
+    N_parques = 0; // Define o número de parques de volta para zero
+}
+
 
 /*
 void liberta_registos_entradas(Registo_entradas *entrada) {
