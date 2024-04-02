@@ -4,11 +4,6 @@
  * @author ist1110633 Filipe Oliveira
 */
 
-/*TERMOS E EXPRESSÕES USADAS AO LONGO DO PROJETO
-- cc: caso contrário
-- mat: matrícula
-*/
-
 /*BREVE DESCRIÇÃO DO RACIOCÍNIO USADO NO PROJETO
 No meu projeto usei as seguintes estruturas:
 - Array para armazenar os parques.
@@ -18,8 +13,8 @@ Cada parque tem um par de listas ligadas.
 
 A hash table apenas serve para armazenar as matrículas, tendo para cada uma a
 informação de se está DENTRO ou FORA de um parque. No meu raciocínio não é
-necessário na hash table saber em que parque está cada veículo, essa parte é
-assimilida nas listas ligadas.
+necessário na hash table saber em que parque específico está cada veículo, essa
+parte é assimilida nas listas ligadas.
 
 Quando um veículo entra num parque: 
 --> Se é a primeira entrada do veículo num parque, a matrícula é inserida na
@@ -35,6 +30,18 @@ Quando um veículo sai de um parque:
 (porque à entrada corresponde agora uma saída).
 
 Após cada entrada/saída bem sucedida é atualizado o tempo atual.
+*/
+
+
+/*TERMOS E EXPRESSÕES USADAS AO LONGO DO PROJETO
+- cc: caso contrário.
+- mat: matrícula.
+- DENTRO: uma matrícula tem estado DENTRO se estiver dentro de algum parque.
+- FORA: uma matrícula tem estado FORA se não estiver em nenhum parque.
+- LIVRE: um registo de entrada de uma matrícula tem estado LIVRE se a esse
+registo de entrada não está associada uma saída.
+- CONECTADO: um registo de entrada de uma matrícula tem estado CONECTADO se a
+esse registo de entrada está associada uma saída.
 */
 
 #include "project.h"
@@ -778,10 +785,6 @@ float calcular_custo_estadia(float valor_15, float valor_15_apos_1hora,
     @return ponteiro para o registo mais recente da matrícula
 */
 Registo_entradas* procura_mat_parque_recente(Parque *parque, char *matricula) {
-    //Verifica se o parque é válido e se há registos de entrada
-    if (parque == NULL || parque->entradas == NULL) {
-        return NULL;
-    }
     Registo_entradas *registo_recente = NULL;
     Registo_entradas *atual = parque->entradas;
 
@@ -809,14 +812,10 @@ Registo_entradas* procura_mat_parque_recente(Parque *parque, char *matricula) {
 */
 Registo_entradas* altera_mat_registo_infosaida(Parque *parque, char *matricula,
                                           Data data_saida, Hora hora_saida) {
-    if (parque == NULL) {
-        return NULL;
-    }
-
     //Percorre a lista de registos de entrada do parque à procura da matrícula
     Registo_entradas *atual = parque->entradas;
     while (atual != NULL) {
-        if (strcmp(atual->matricula, matricula) == 0 && atual->estado == LIVRE) {
+        if (strcmp(atual->matricula, matricula) == 0 && atual->estado ==LIVRE) {
             //Atualiza as informações do veículo em questão
             atual->estado = CONECTADO;
             atual->data_saida = data_saida;
