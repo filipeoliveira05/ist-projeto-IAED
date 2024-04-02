@@ -150,8 +150,7 @@ void le_input(char lista_de_palavras[][MAX_INPUT], int *argumentos) {
             lista_de_palavras[*argumentos][i] = '\0';
             (*argumentos)++;
             i = 0;
-        }
-        else {
+        } else {
             /* Verifica se estamos dentro de um par de aspas*/
             if (c == '"') {
                 aspas = !aspas;
@@ -343,9 +342,7 @@ void insere_mat_hashtable(HashTable *hashTable, char *matricula) {
 
     if (hashTable->table[index] == NULL) {
         hashTable->table[index] = newNode;
-    }
-
-    else {
+    } else {
         nodeHASH *current = hashTable->table[index];
         while (current->next != NULL) {
             current = current->next;
@@ -392,32 +389,28 @@ int matricula_valida(char *matricula) {
     //verifica primeiro par
     if (isupper(matricula[0]) && isupper(matricula[1])) {
         let_counter += 1;
-    } 
-    else if (isdigit(matricula[0]) && isdigit(matricula[1])) {
+    } else if (isdigit(matricula[0]) && isdigit(matricula[1])) {
         num_counter += 1;
     }
 
     //verifica segundo par
     if (isupper(matricula[3]) && isupper(matricula[4])) {
         let_counter += 1;
-    } 
-    else if (isdigit(matricula[3]) && isdigit(matricula[4])) {
+    } else if (isdigit(matricula[3]) && isdigit(matricula[4])) {
         num_counter += 1;
     }
 
     //verifica terceiro par
     if (isupper(matricula[6]) && isupper(matricula[7])) {
         let_counter += 1;
-    } 
-    else if (isdigit(matricula[6]) && isdigit(matricula[7])) {
+    } else if (isdigit(matricula[6]) && isdigit(matricula[7])) {
         num_counter += 1;
     }
 
     //verifica counters
     if(num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3) {
         return FALSE;
-    }
-    else {
+    } else {
         return TRUE;
     }
 }
@@ -480,16 +473,21 @@ int horaValida(Hora h) {
     @return TRUE se d2 é mais recente ou igual a d1, FALSE cc
 */
 int dataRecente(Data d1, Data d2) {
-    if (d1.a > d2.a)
+    if (d1.a > d2.a) {
         return FALSE;
-    if (d1.a < d2.a)
+    }
+    if (d1.a < d2.a) {
         return TRUE;
-    if (d1.m > d2.m)
+    }
+    if (d1.m > d2.m) {
         return FALSE;
-    if (d1.m < d2.m)
+    }
+    if (d1.m < d2.m) {
         return TRUE;
-    if (d1.d > d2.d)
+    }
+    if (d1.d > d2.d) {
         return FALSE;
+    }
     return TRUE;
 }
 
@@ -502,12 +500,15 @@ int dataRecente(Data d1, Data d2) {
     @return TRUE se h2 é mais recente ou igual a h1, FALSE cc
 */
 int horaRecente(Hora h1, Hora h2) {
-    if (h1.h > h2.h)
+    if (h1.h > h2.h) {
         return FALSE;
-    if (h1.h < h2.h)
+    }
+    if (h1.h < h2.h) {
         return TRUE;
-    if (h1.min > h2.min)
+    }
+    if (h1.min > h2.min) {
         return FALSE;
+    }
     return TRUE;
 }
 
@@ -520,8 +521,9 @@ int horaRecente(Hora h1, Hora h2) {
     @return TRUE se d1 é igual a d2, FALSE cc
 */
 int dataIgual(Data d1, Data d2) {
-    if (d1.a == d2.a && d1.m == d2.m && d1.d == d2.d)
+    if (d1.a == d2.a && d1.m == d2.m && d1.d == d2.d) {
         return TRUE;
+    }
     return FALSE;
 }
 
@@ -534,8 +536,9 @@ int dataIgual(Data d1, Data d2) {
     @return TRUE se h1 é igual a h2, FALSE cc
 */
 int horaIgual(Hora h1, Hora h2) {
-    if (h1.h == h2.h && h1.min == h2.min)
+    if (h1.h == h2.h && h1.min == h2.min) {
         return TRUE;
+    }
     return FALSE;
 }
 
@@ -551,8 +554,9 @@ int horaIgual(Hora h1, Hora h2) {
 */
 int data_hora_valida_e_recente(Data d1, Hora h1, Data d2, Hora h2) {
     //Verifica se as datas e horas são válidas
-    if (!dataValida(d2) || !horaValida(h2))
+    if (!dataValida(d2) || !horaValida(h2)) {
         return FALSE;
+    }
 
     //Verifica se o instante 2 é mais recente ou igual ao 1
     if (dataRecente(d1, d2)) {
@@ -584,8 +588,7 @@ Data datamaismais(Data d) {
         d.m++;
         if(d.m == 13){
             return (Data){1, 1, d.a+1};
-        }
-        else return (Data){1, d.m, d.a};
+        } else return (Data){1, d.m, d.a};
     }
     return (Data){d.d, d.m, d.a};
 }
@@ -734,21 +737,14 @@ void processar_entradas(HashTable *hashTable) {
             //Erros
             else if (resultado == -1) {
                 printf("%s: parking is full.\n", nome_parque);
-            }
-            
-            else if (resultado == -2) {
+            } else if (resultado == -2) {
                 printf("%s: invalid licence plate.\n", matricula);
-            }
-
-            else if (resultado == -3) {
+            } else if (resultado == -3) {
                 printf("%s: invalid vehicle entry.\n", matricula);
-            }
-            
-            else if (resultado == -4) {
+            } else if (resultado == -4) {
                 printf("invalid date.\n");
             }
-        } 
-        else {  
+        } else {  
             printf("%s: no such parking.\n", nome_parque);
         }
     }
@@ -995,8 +991,7 @@ void processar_saidas(HashTable *hashTable) {
                        data_entrada.d,data_entrada.m, data_entrada.a, hora_entrada.h, hora_entrada.min,
                        registo->data_saida.d, registo->data_saida.m, registo->data_saida.a,
                        registo->hora_saida.h, registo->hora_saida.min, custo_estadia);
-            }
-            else if (resultado == -1) {
+            } else if (resultado == -1) {
                 printf("%s: invalid licence plate.\n", matricula);
             } else if (resultado == -2) {
                 printf("%s: invalid vehicle entry.\n", matricula);
@@ -1497,5 +1492,4 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 
 //GERAL
 - Mudar nome de funções para ser mais claro
-- Formatação dos if e else
 */
