@@ -277,11 +277,6 @@ void processar_parques() {
 */
 HashTable *cria_HashTable() {
     HashTable *hashTable = (HashTable *)malloc(sizeof(HashTable));
-    if (hashTable == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
-
     for (int i = 0; i < TABLE_SIZE; i++) {
         hashTable->table[i] = NULL;
     }
@@ -298,11 +293,6 @@ HashTable *cria_HashTable() {
 */
 nodeHASH *cria_node_matricula(char *matricula) {
     nodeHASH *newNode = (nodeHASH *)malloc(sizeof(nodeHASH));
-    if (newNode == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
-
     newNode->estado = DENTRO;
     newNode->matricula = strdup(matricula);
     newNode->next = NULL;
@@ -675,10 +665,7 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data,
      
     //Aloca memória para o novo registo
     Registo_entradas *novo_registo = malloc(sizeof(Registo_entradas));
-    if (novo_registo == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
+
     //Preenche os dados do novo registo e insere-o na lista de entradas
     strcpy(novo_registo->matricula, matricula);
     novo_registo->data = data;
@@ -917,10 +904,6 @@ int insere_saida_parque(Parque *parque, char *matricula, Data data,
 
     //Aloca memória para o novo registo
     Registo_saidas *novo_registo_saida = malloc(sizeof(Registo_saidas));
-    if (novo_registo_saida == NULL) {
-        perror("Memory allocation error");
-        exit(EXIT_FAILURE);
-    }
 
     //Preenche os dados do novo registo e insere-o na lista de saídas
     strcpy(novo_registo_saida->matricula, matricula);
