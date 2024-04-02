@@ -260,6 +260,7 @@ void processar_parques() {
             printf("%s %d %d\n", stored_parques[i].nome_parque, 
             stored_parques[i].capacidade, stored_parques[i].lugares_disponiveis);
         }
+        return;
     } 
     
     //Se forem dados argumentos, cria um parque se possível, com o input dado
@@ -389,28 +390,36 @@ int matricula_valida(char *matricula) {
     int num_counter = 0, let_counter = 0;
 
     //verifica primeiro par
-    if (isupper(matricula[0]) && isupper(matricula[1]))
+    if (isupper(matricula[0]) && isupper(matricula[1])) {
         let_counter += 1;
-    else if (isdigit(matricula[0]) && isdigit(matricula[1]))
+    } 
+    else if (isdigit(matricula[0]) && isdigit(matricula[1])) {
         num_counter += 1;
+    }
 
     //verifica segundo par
-    if (isupper(matricula[3]) && isupper(matricula[4]))
+    if (isupper(matricula[3]) && isupper(matricula[4])) {
         let_counter += 1;
-    else if (isdigit(matricula[3]) && isdigit(matricula[4]))
+    } 
+    else if (isdigit(matricula[3]) && isdigit(matricula[4])) {
         num_counter += 1;
+    }
 
     //verifica terceiro par
-    if (isupper(matricula[6]) && isupper(matricula[7]))
+    if (isupper(matricula[6]) && isupper(matricula[7])) {
         let_counter += 1;
-    else if (isdigit(matricula[6]) && isdigit(matricula[7]))
+    } 
+    else if (isdigit(matricula[6]) && isdigit(matricula[7])) {
         num_counter += 1;
+    }
 
     //verifica counters
-    if (num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3)
+    if(num_counter == 0 || let_counter == 0 || num_counter + let_counter != 3) {
         return FALSE;
-    else
+    }
+    else {
         return TRUE;
+    }
 }
 
 
@@ -620,6 +629,7 @@ void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable,char *matricula){
     while (node != NULL) {
         if (strcmp(node->matricula, matricula) == 0) {
             node->estado = DENTRO;
+            return;
         }
         node = node->next;
     }
@@ -850,6 +860,7 @@ void atualiza_mat_hashtable_estado_fora(HashTable *hashTable, char *matricula) {
     while (node != NULL) {
         if (strcmp(node->matricula, matricula) == 0) {
             node->estado = FORA;
+            return;
         }
         node = node->next;
     }
@@ -874,6 +885,7 @@ void atualizar_custo_registo_saida(Parque *parque, char *matricula, Data data,
         if (strcmp(atual->matricula, matricula) == 0 &&
             dataIgual(atual->data, data) && horaIgual(atual->hora, hora)) {
             atual->custo = novo_custo;
+            return;
         }
         atual = atual->next;
     }
@@ -1055,6 +1067,7 @@ void mostrar_faturacao_determinado_dia(char *nome_parque, Data data_pesquisa) {
     //Verifica se a data é válida
     if (!dataRecente(data_pesquisa, data_atual) || !dataValida(data_pesquisa)) {
         printf("invalid date.\n");
+        return;
     }
     
     //Verifica se o parque existe
@@ -1252,6 +1265,7 @@ void processar_comando_v() {
         //Verifica se a matrícula é válida
         if (!matricula_valida(matricula)) {
             printf("%s: invalid licence plate.\n", matricula);
+            return;
         }
 
         mostrar_registos_veiculo(matricula);
@@ -1375,6 +1389,10 @@ void processar_comando_r(HashTable *hashTable) {
     @param hashTable hash table que recebe as matrículas durante o programa
 */
 void liberta_hashtable(HashTable *hashTable) {
+    if (hashTable == NULL) {
+        return;
+    }
+
     //Percorre todos os nodes da hash table, libertando um a um
     for (int i = 0; i < TABLE_SIZE; i++) {
         nodeHASH *current = hashTable->table[i];
