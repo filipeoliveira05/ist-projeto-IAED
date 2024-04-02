@@ -60,7 +60,7 @@ int main () {
     HashTable *hashTable = cria_HashTable();
     processar_input(hashTable);
     liberta_hashtable(hashTable);
-    liberar_todos_os_parques();
+    liberta_todos_os_parques();
     return 0;
 }
 
@@ -1358,11 +1358,6 @@ void processar_comando_r(HashTable *hashTable) {
 
 
 
-
-/*FUNÇÕES PARA LIBERTAR MEMÓRIA*/
-
-
-
 /**
     Liberta a memória alocada para a hash table
     @param hashTable hash table que recebe as matrículas durante o programa
@@ -1387,8 +1382,13 @@ void liberta_hashtable(HashTable *hashTable) {
 }
 
 
-void liberar_registros_entradas_parque(Registo_entradas *lista_registros) {
-    Registo_entradas *atual = lista_registros;
+
+/**
+    Liberta a memória alocada para a lista ligada de registos de entradas.
+    @param lista_registos lista ligada de registos de entradas de um parque
+*/
+void liberta_registos_entradas_parque(Registo_entradas *lista_registos) {
+    Registo_entradas *atual = lista_registos;
     while (atual != NULL) {
         Registo_entradas *temp = atual;
         atual = atual->next;
@@ -1396,8 +1396,14 @@ void liberar_registros_entradas_parque(Registo_entradas *lista_registros) {
     }
 }
 
-void liberar_registros_saidas_parque(Registo_saidas *registro_saida) {
-    Registo_saidas *atual = registro_saida;
+
+
+/**
+    Liberta a memória alocada para a lista ligada de registos de saídas.
+    @param lista_registos lista ligada de registos de saídas de um parque
+*/
+void liberta_registos_saidas_parque(Registo_saidas *registo_saida) {
+    Registo_saidas *atual = registo_saida;
     while (atual != NULL) {
         Registo_saidas *temp = atual;
         atual = atual->next;
@@ -1406,94 +1412,21 @@ void liberar_registros_saidas_parque(Registo_saidas *registro_saida) {
 }
 
 
-void liberar_todos_os_parques() {
-    for (int i = 0; i < N_parques; i++) {
-        // Libera os registros de saída do parque
-        liberar_registros_saidas_parque(stored_parques[i].saidas);
-        stored_parques[i].saidas = NULL;
 
-        // Libera os registros de entrada do parque
-        liberar_registros_entradas_parque(stored_parques[i].entradas);
+/**
+    Liberta a memória alocada para os parques no sistema.
+*/
+void liberta_todos_os_parques() {
+    for (int i = 0; i < N_parques; i++) {
+        liberta_registos_entradas_parque(stored_parques[i].entradas);
         stored_parques[i].entradas = NULL;
-    }
-    N_parques = 0; // Define o número de parques de volta para zero
-}
-
-
-/*
-void liberta_registos_entradas(Registo_entradas *entrada) {
-    Registo_entradas *atual = entrada;
-    Registo_entradas *proximo;
-
-    while (atual != NULL) {
-        proximo = atual->next; // Salva o próximo nó antes de liberar o atual
-        free(atual); // Libera a memória do nó atual
-        atual = proximo; // Move para o próximo nó
-    }
-}
-
-void liberta_registos_saidas(Registo_saidas *saida) {
-    Registo_saidas *atual = saida;
-    Registo_saidas *proximo;
-
-    while (atual != NULL) {
-        proximo = atual->next; // Salva o próximo nó antes de liberar o atual
-        free(atual); // Libera a memória do nó atual
-        atual = proximo; // Move para o próximo nó
-    }
-}
-
-void liberta_parque(Parque *parque) {
-    liberta_registos_entradas(parque->entradas);
-    liberta_registos_saidas(parque->saidas);
-    free(parque);
-}
-
-
-void liberta(HashTable *hashTable) {
-    for (int i = 0; i < N_parques; i++) {
-        Parque *parque = &stored_parques[i];
-        liberta_parque(parque);
-    }
-
-    liberta_hashtable(hashTable);
-}
-*/
-
-
-/*
-void destroy_node_entradas(Registo_entradas *registo) {
-    if (registo != NULL) {
-        destroy_node_entradas(registo->next);
-        free(registo->matricula);
-        registo->matricula = NULL;
-        free(registo);
-        registo = NULL;
-    }
-}
-
-void destroy_node_saidas(Registo_saidas *registo) {
-    if (registo != NULL) {
-        destroy_node_saidas(registo->next);
-        free(registo->matricula);
-        registo->matricula = NULL;
-        free(registo);
-        registo = NULL;
+        
+        liberta_registos_saidas_parque(stored_parques[i].saidas);
+        stored_parques[i].saidas = NULL;    
     }
 }
 
 
-void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
-    for (int i = 0; i < MAX_PARQUES; i++) {
-        free(stored_parques[i].nome_parque);
-        stored_parques[i].nome_parque = NULL;
-        destroy_node_entradas(stored_parques[i].head_ent);
-        destroy_node_saidas(stored_parques[i].head_sai);
-    }
-
-    liberta_hashtable(hashTable);
-}
-*/
 
 
 
@@ -1501,13 +1434,9 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 /* CENAS PARA FAZER 
 
 //MEMÓRIA
-- perror("Memory allocation error");
 - Alocar memória dinamicamente para matrículas, nome dos parques e listas ligadas de registos
 - Free das matricuals, nome dos parques e listas ligadas de registos
 
 //CÓDIGO
 - return em funções void
-
-//GERAL
-- Mudar nome de funções para ser mais claro
 */

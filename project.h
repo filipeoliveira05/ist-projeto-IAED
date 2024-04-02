@@ -171,17 +171,8 @@ void remove_parque_e_registos(char *nome_parque, HashTable *hashTable);
 
 
 void liberta_hashtable(HashTable *hashTable);
-void liberar_registros_entradas_parque(Registo_entradas *lista_registros);
-void liberar_registros_saidas_parque(Registo_saidas *registro_saida);
-void liberar_todos_os_parques();
+void liberta_registos_entradas_parque(Registo_entradas *lista_registros);
+void liberta_registos_saidas_parque(Registo_saidas *registro_saida);
+void liberta_todos_os_parques();
 
-
-
-
-/*
-void liberta_registros_entradas(Registo_entradas *entrada);
-void liberta_registros_saidas(Registo_saidas *saida);
-void liberta_parque(Parque *parque);
-void liberta(HashTable *hashTable);
-*/
 #endif
