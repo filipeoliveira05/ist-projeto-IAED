@@ -4,18 +4,37 @@
  * @author ist1110633 Filipe Oliveira
 */
 
+/*TERMOS E EXPRESSÕES USADAS AO LONGO DO PROJETO
+- cc: caso contrário
+- mat: matrícula
+*/
+
 /*BREVE DESCRIÇÃO DO RACIOCÍNIO USADO NO PROJETO
 No meu projeto usei as seguintes estruturas:
-- Array para armazenar os parques
-- Hash table para armazenar as matrículas dos veículos que entram nos parques
-- Duas listas ligadas, uma para o registo de entradas e outra para as saídas. Cada parque tem um par de listas ligadas.
-A hash table apenas serve para armazenar as matrículas tendo, para cada uma, a informação de se está DENTRO ou FORA de um parque.
-No meu raciocínio não é necessário na hash table saber em que parque está cada veículo, essa parte é assimilida nas listas ligadas
+- Array para armazenar os parques.
+- Hash table para armazenar as matrículas dos veículos que entram nos parques.
+- Duas listas ligadas, uma para o registo de entradas e outra para as saídas.
+Cada parque tem um par de listas ligadas.
+
+A hash table apenas serve para armazenar as matrículas, tendo para cada uma a
+informação de se está DENTRO ou FORA de um parque. No meu raciocínio não é
+necessário na hash table saber em que parque está cada veículo, essa parte é
+assimilida nas listas ligadas.
+
 Quando um veículo entra num parque: 
---> A matrícula é inserida na hash table com o estado DENTRO
---> é inserido na sua lista ligada de entradas e o estado do veículo é LIVRE (porque apenas deu entrada)
-Quando um veículo sai de um parque, é inserido na sua lista ligada de saídas e o estado do veículo na lista de entradas é atualizado para CONECTADO (porque à entrada corresponde agora uma saída)
-Desta forma, consigo iterar pela lista de entradas de cada parque e saber cada ciclo completo que houve (entrada seguida de uma futura saída)
+--> Se é a primeira entrada do veículo num parque, a matrícula é inserida na
+hash table com o estado DENTRO.
+--> Se não é a primeira vez, apenas atualiza o estado na hash table para DENTRO.
+--> É inserido na lista ligada de entradas do parque e o estado do veículo é
+LIVRE (porque apenas deu entrada).
+
+Quando um veículo sai de um parque:
+--> Atualiza o estado na hash table para FORA.
+--> É inserido na lista ligada de saídas do parque.
+--> Estado do veículo na lista de entradas é atualizado para CONECTADO
+(porque à entrada corresponde agora uma saída).
+
+Após cada entrada/saída bem sucedida é atualizado o tempo atual.
 */
 
 #include "project.h"
@@ -26,7 +45,7 @@ int N_parques = 0;
 /*Array de parques no sistema.*/
 Parque stored_parques[MAX_PARQUES];
 
-/*Variáveis globais data e hora atual (atualizado nas entradas/saidas)*/
+/*Variáveis globais data e hora atual (atualizado nas entradas/saídas)*/
 Data data_atual = {0, 0, 0};
 Hora hora_atual = {0, 0};
 
@@ -171,7 +190,7 @@ int parque_existe(char nome_parque[]) {
 /**
     Cria um parque dentro do array stored_parques.
     @param nome_parque nome do parque a criar
-    @param capacidade número máximo de carros que podem entrar no parque
+    @param capacidade número máximo de veículos que podem entrar no parque
     @param valor_15 custo por cada 15 minutos na 1ª hora
     @param valor_15_apos_1hora custo por cada 15 minutos após a 1ª hora
     @param valor_max_diario custo máximo diário (24 horas)
@@ -241,7 +260,6 @@ void processar_parques() {
             printf("%s %d %d\n", stored_parques[i].nome_parque, 
             stored_parques[i].capacidade, stored_parques[i].lugares_disponiveis);
         }
-        return;
     } 
     
     //Se forem dados argumentos, cria um parque se possível, com o input dado
@@ -275,7 +293,7 @@ HashTable *cria_HashTable() {
 
 /**
     Cria um node da hash table de acordo com a estrutura nodeHASH.
-    @param matricula matricula que vai ocupar o node da hash table
+    @param matricula matrícula que vai ocupar o node da hash table
     @return node criado
 */
 nodeHASH *cria_node_matricula(char *matricula) {
@@ -295,8 +313,8 @@ nodeHASH *cria_node_matricula(char *matricula) {
 
 /**
     Calcula o hash de uma matrícula.
-    @param matricula matricula para calcular o seu hash
-    @return hash da matricula
+    @param matricula matrícula para calcular o seu hash
+    @return hash da matrícula
 */
 unsigned long hash(char *matricula) {
     unsigned long hash = 5381;
@@ -313,11 +331,11 @@ unsigned long hash(char *matricula) {
 
 /**
     Insere uma matrícula dentro da hash table.
-    @param hashTable hash table onde se vai inserir a matricula
-    @param matricula matricula a ser inserida na hash table
+    @param hashTable hash table onde se vai inserir a matrícula
+    @param matricula matrícula a ser inserida na hash table
 */
 void insere_mat_hashtable(HashTable *hashTable, char *matricula) {
-    //Obtem o hash da matrícula
+    //Obtém o hash da matrícula
     int index = hash(matricula);
 
     nodeHASH *newNode = cria_node_matricula(matricula);
@@ -339,12 +357,12 @@ void insere_mat_hashtable(HashTable *hashTable, char *matricula) {
 
 /**
     Procura uma determinada matrícula dentro da hash table.
-    @param hashTable hash table onde se vai procurar a matricula
-    @param matricula matricula procurada
-    @return ponteiro para o node com a matricula, NULL se não foi encontrada
+    @param hashTable hash table onde se vai procurar a matrícula
+    @param matricula matrícula procurada
+    @return ponteiro para o node com a matrícula, NULL se não foi encontrada
 */
 nodeHASH *procura_mat_na_hastable(HashTable *hashTable, char *matricula) {
-    //Obtem o hash da matrícula
+    //Obtém o hash da matrícula
     int index = hash(matricula);
 
     nodeHASH *current = hashTable->table[index];
@@ -364,7 +382,7 @@ nodeHASH *procura_mat_na_hastable(HashTable *hashTable, char *matricula) {
 
 /**
     Verifica se uma matrícula é válida.
-    @param matricula matricula a ser verificada
+    @param matricula matrícula a ser verificada
     @return TRUE se a matrícula é válida, FALSE cc
 */
 int matricula_valida(char *matricula) {
@@ -590,7 +608,7 @@ int calcula_minutos_entre_datas(Data d1, Hora h1, Data d2, Hora h2) {
 /**
     Atualiza o estado da matrícula na hashtable para DENTRO.
     @param hashTable hash table onde se vai procurar a matrícula
-    @param matricula matricula para alterar o estado
+    @param matricula matrícula para alterar o estado
 */
 void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable,char *matricula){
     //Obtém o hash da matrícula
@@ -602,7 +620,6 @@ void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable,char *matricula){
     while (node != NULL) {
         if (strcmp(node->matricula, matricula) == 0) {
             node->estado = DENTRO;
-            return;
         }
         node = node->next;
     }
@@ -613,7 +630,7 @@ void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable,char *matricula){
 /**
     Função principal associada à entrada de um veículo num parque.
     @param parque parque onde se vai tentar inserir o veículo
-    @param matricula matricula do veículo
+    @param matricula matrícula do veículo
     @param data data de entrada do veículo
     @param hora hora de entrada do veículo
     @param hashTable hash table onde se vai inserir a matrícula
@@ -621,7 +638,7 @@ void atualiza_mat_hashtable_estado_dentro(HashTable *hashTable,char *matricula){
 */
 int insere_entrada_parque(Parque *parque, char *matricula, Data data,
                           Hora hora, HashTable *hashTable) {
-    //Verifica se o parque está cheio, data, matrícula e se o carro está dentro
+    //Verifica se o parque está cheio, data, matrícula e o estado do veículo
     if (parque->lugares_disponiveis <= 0) {
         return -1;
     }
@@ -771,19 +788,19 @@ Registo_entradas* procura_mat_parque_recente(Parque *parque, char *matricula) {
     if (parque == NULL || parque->entradas == NULL) {
         return NULL;
     }
-    Registo_entradas *registro_recente = NULL;
+    Registo_entradas *registo_recente = NULL;
     Registo_entradas *atual = parque->entradas;
 
     //Percorre a lista de registos à procura da matrícula
     while (atual != NULL) {
         if (strcmp(atual->matricula, matricula) == 0) {
             //Atualiza o registo mais recente
-            registro_recente = atual;
+            registo_recente = atual;
         }
         atual = atual->next;
     }
 
-    return registro_recente;
+    return registo_recente;
 }
 
 
@@ -833,7 +850,6 @@ void atualiza_mat_hashtable_estado_fora(HashTable *hashTable, char *matricula) {
     while (node != NULL) {
         if (strcmp(node->matricula, matricula) == 0) {
             node->estado = FORA;
-            return;
         }
         node = node->next;
     }
@@ -849,7 +865,7 @@ void atualiza_mat_hashtable_estado_fora(HashTable *hashTable, char *matricula) {
     @param hora hora de saída do veículo
     @param novo_custo custo da estadia do veículo no parque
 */
-void atualizar_custo_registro_saida(Parque *parque, char *matricula, Data data,
+void atualizar_custo_registo_saida(Parque *parque, char *matricula, Data data,
                                     Hora hora, float novo_custo) {
     Registo_saidas *atual = parque->saidas;
     //Percorre a lista de registos de saída do parque e introduz o custo
@@ -858,7 +874,6 @@ void atualizar_custo_registro_saida(Parque *parque, char *matricula, Data data,
         if (strcmp(atual->matricula, matricula) == 0 &&
             dataIgual(atual->data, data) && horaIgual(atual->hora, hora)) {
             atual->custo = novo_custo;
-            return;
         }
         atual = atual->next;
     }
@@ -878,7 +893,7 @@ void atualizar_custo_registro_saida(Parque *parque, char *matricula, Data data,
 int insere_saida_parque(Parque *parque, char *matricula, Data data,
                         Hora hora, HashTable *hashTable) {
 
-    //Verifica a matrícula, data e se o carro está fora do parque
+    //Verifica a matrícula, data e se o veículo está fora do parque
     if (!matricula_valida(matricula)) {
         return -1;
     }
@@ -929,7 +944,7 @@ int insere_saida_parque(Parque *parque, char *matricula, Data data,
 
 /**
     Processa o input do comando "s" dado pelo utilizador.
-    @param hashTable hash table onde se encontra a matricula
+    @param hashTable hash table onde se encontra a matrícula
 */
 void processar_saidas(HashTable *hashTable) {
     char argumentos[MAX_ARGUMENTOS][MAX_INPUT];
@@ -951,23 +966,23 @@ void processar_saidas(HashTable *hashTable) {
             int resultado = insere_saida_parque(parque, matricula, data_saida,
                                                 hora_saida, hashTable);
             if (resultado == 0) {
-                Registo_entradas *registro = procura_mat_parque_recente(parque, matricula);
+                Registo_entradas *registo = procura_mat_parque_recente(parque, matricula);
 
-                Data data_entrada = registro->data;
-                Hora hora_entrada = registro->hora;
+                Data data_entrada = registo->data;
+                Hora hora_entrada = registo->hora;
                 int minutos_estadia = calcula_minutos_entre_datas(data_entrada, hora_entrada,
                                                                   data_saida, hora_saida);
                 float custo_estadia = calcular_custo_estadia(parque->valor_15,
                 parque->valor_15_apos_1hora, parque->valor_max_diario, minutos_estadia);
 
-                atualizar_custo_registro_saida(parque, matricula, data_saida,
+                atualizar_custo_registo_saida(parque, matricula, data_saida,
                                                hora_saida, custo_estadia);
 
                 //Imprime a informação sobre o parque após cada saída.
                 printf("%s %02d-%02d-%d %02d:%02d %02d-%02d-%d %02d:%02d %.2f\n", matricula,
                        data_entrada.d,data_entrada.m, data_entrada.a, hora_entrada.h, hora_entrada.min,
-                       registro->data_saida.d, registro->data_saida.m, registro->data_saida.a,
-                       registro->hora_saida.h, registro->hora_saida.min, custo_estadia);
+                       registo->data_saida.d, registo->data_saida.m, registo->data_saida.a,
+                       registo->hora_saida.h, registo->hora_saida.min, custo_estadia);
             }
             else if (resultado == -1) {
                 printf("%s: invalid licence plate.\n", matricula);
@@ -1040,7 +1055,6 @@ void mostrar_faturacao_determinado_dia(char *nome_parque, Data data_pesquisa) {
     //Verifica se a data é válida
     if (!dataRecente(data_pesquisa, data_atual) || !dataValida(data_pesquisa)) {
         printf("invalid date.\n");
-        return;
     }
     
     //Verifica se o parque existe
@@ -1178,10 +1192,10 @@ void mergeSort(int arr[], int l, int r, Parque stored_parques[MAX_PARQUES]) {
 
 /**
     Lista as entradas e saídas de um veículo.
-    @param matricula matricula do veículo cujos registos vão ser mostrados
+    @param matricula matrícula do veículo cujos registos vão ser mostrados
  */
-void mostrar_registros_veiculo(char *matricula) {
-    int encontrou_registros = FALSE;
+void mostrar_registos_veiculo(char *matricula) {
+    int encontrou_registos = FALSE;
     int indices_parques[N_parques];
     
     //Preenche o array de índices com os índices dos parques
@@ -1194,29 +1208,29 @@ void mostrar_registros_veiculo(char *matricula) {
 
     for (int i = 0; i < N_parques; i++) {
         Parque *parque = &stored_parques[indices_parques[i]];
-        Registo_entradas *registro = parque->entradas;
+        Registo_entradas *registo = parque->entradas;
         //Percorre o registo de entradas de cada parque
-        while (registro != NULL) {
-            //Se encontrou um registro do veículo, imprime as informações
-            if (strcmp(registro->matricula, matricula) == 0) {
-                encontrou_registros = TRUE;
+        while (registo != NULL) {
+            //Se encontrou um registo do veículo, imprime as informações
+            if (strcmp(registo->matricula, matricula) == 0) {
+                encontrou_registos = TRUE;
                 printf("%s %02d-%02d-%d %02d:%02d", parque->nome_parque, 
-                       registro->data.d, registro->data.m, registro->data.a,
-                       registro->hora.h, registro->hora.min);
+                       registo->data.d, registo->data.m, registo->data.a,
+                       registo->hora.h, registo->hora.min);
                 //Se o veículo está dentro do parque, não mostra a data/hora de saída
-                if (registro->estado == LIVRE) {
+                if (registo->estado == LIVRE) {
                     printf("\n");
                 } else {
-                    printf(" %02d-%02d-%d %02d:%02d\n", registro->data_saida.d,
-                           registro->data_saida.m, registro->data_saida.a, 
-                           registro->hora_saida.h, registro->hora_saida.min);
+                    printf(" %02d-%02d-%d %02d:%02d\n", registo->data_saida.d,
+                           registo->data_saida.m, registo->data_saida.a, 
+                           registo->hora_saida.h, registo->hora_saida.min);
                 }
             }
-            registro = registro->next;
+            registo = registo->next;
         }
     }
     //Se nenhum registo foi encontrado, mostra a mensagem de erro
-    if (!encontrou_registros) {
+    if (!encontrou_registos) {
         printf("%s: no entries found in any parking.\n", matricula);
     }
 }
@@ -1238,10 +1252,9 @@ void processar_comando_v() {
         //Verifica se a matrícula é válida
         if (!matricula_valida(matricula)) {
             printf("%s: invalid licence plate.\n", matricula);
-            return;
         }
 
-        mostrar_registros_veiculo(matricula);
+        mostrar_registos_veiculo(matricula);
     }
 }
 
@@ -1362,10 +1375,6 @@ void processar_comando_r(HashTable *hashTable) {
     @param hashTable hash table que recebe as matrículas durante o programa
 */
 void liberta_hashtable(HashTable *hashTable) {
-    if (hashTable == NULL) {
-        return;
-    }
-
     //Percorre todos os nodes da hash table, libertando um a um
     for (int i = 0; i < TABLE_SIZE; i++) {
         nodeHASH *current = hashTable->table[i];
@@ -1381,7 +1390,7 @@ void liberta_hashtable(HashTable *hashTable) {
 }
 
 /*
-void liberta_registros_entradas(Registo_entradas *entrada) {
+void liberta_registos_entradas(Registo_entradas *entrada) {
     Registo_entradas *atual = entrada;
     Registo_entradas *proximo;
 
@@ -1392,7 +1401,7 @@ void liberta_registros_entradas(Registo_entradas *entrada) {
     }
 }
 
-void liberta_registros_saidas(Registo_saidas *saida) {
+void liberta_registos_saidas(Registo_saidas *saida) {
     Registo_saidas *atual = saida;
     Registo_saidas *proximo;
 
@@ -1404,8 +1413,8 @@ void liberta_registros_saidas(Registo_saidas *saida) {
 }
 
 void liberta_parque(Parque *parque) {
-    liberta_registros_entradas(parque->entradas);
-    liberta_registros_saidas(parque->saidas);
+    liberta_registos_entradas(parque->entradas);
+    liberta_registos_saidas(parque->saidas);
     free(parque);
 }
 
@@ -1462,7 +1471,7 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 
 //MEMÓRIA
 - perror("Memory allocation error");
-- Alocar memória dinamicamente para matriculas, nome dos parques e listas ligadas de registos
+- Alocar memória dinamicamente para matrículas, nome dos parques e listas ligadas de registos
 - Free das matricuals, nome dos parques e listas ligadas de registos
 
 //CÓDIGO
@@ -1471,8 +1480,4 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 //GERAL
 - Mudar nome de funções para ser mais claro
 - Formatação dos if e else
-- Dicionário de abreviações e expressões (cc por exemplo) (FORA e DENTRO; LIVRE e CONECTADO)
-- Descrição do raciocínio usado no projeto
-- Control f em palavras mal escritas (veiculo, matricula, carro, registro, obtem, saida)
-
 */
