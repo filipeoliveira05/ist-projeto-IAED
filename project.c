@@ -4,8 +4,18 @@
  * @author ist1110633 Filipe Oliveira
 */
 
-/*TERMOS IMPORTANTES A SABER
-cc - caso contrário
+/*BREVE DESCRIÇÃO DO RACIOCÍNIO USADO NO PROJETO
+No meu projeto usei as seguintes estruturas:
+- Array para armazenar os parques
+- Hash table para armazenar as matrículas dos veículos que entram nos parques
+- Duas listas ligadas, uma para o registo de entradas e outra para as saídas. Cada parque tem um par de listas ligadas.
+A hash table apenas serve para armazenar as matrículas tendo, para cada uma, a informação de se está DENTRO ou FORA de um parque.
+No meu raciocínio não é necessário na hash table saber em que parque está cada veículo, essa parte é assimilida nas listas ligadas
+Quando um veículo entra num parque: 
+--> A matrícula é inserida na hash table com o estado DENTRO
+--> é inserido na sua lista ligada de entradas e o estado do veículo é LIVRE (porque apenas deu entrada)
+Quando um veículo sai de um parque, é inserido na sua lista ligada de saídas e o estado do veículo na lista de entradas é atualizado para CONECTADO (porque à entrada corresponde agora uma saída)
+Desta forma, consigo iterar pela lista de entradas de cada parque e saber cada ciclo completo que houve (entrada seguida de uma futura saída)
 */
 
 #include "project.h"
@@ -621,10 +631,14 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data,
     }
 
     nodeHASH *estado_matricula = procura_mat_na_hastable(hashTable, matricula);
-    if (estado_matricula != NULL && estado_matricula->estado == DENTRO) {
+    if (estado_matricula == NULL) {
+        insere_mat_hashtable(hashTable, matricula);
+    } else if (estado_matricula->estado == DENTRO) {
         return -3;
+    } else {
+        atualiza_mat_hashtable_estado_dentro(hashTable, matricula);
     }
-
+    
     if (!data_hora_valida_e_recente(data_atual, hora_atual, data, hora)) {
         return -4;
     }
@@ -635,7 +649,6 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data,
         perror("Memory allocation error");
         exit(EXIT_FAILURE);
     }
-
     //Preenche os dados do novo registo e insere-o na lista de entradas
     strcpy(novo_registo->matricula, matricula);
     novo_registo->data = data;
@@ -652,9 +665,6 @@ int insere_entrada_parque(Parque *parque, char *matricula, Data data,
         }
         atual->next = novo_registo;
     }
-    //Insere a matrícula na hashtale e atualiza o seu estado
-    insere_mat_hashtable(hashTable, matricula);
-    atualiza_mat_hashtable_estado_dentro(hashTable, matricula);
     parque->lugares_disponiveis--;
     atualizar_tempo(&data_atual, &hora_atual, data, hora);
     return 0;
@@ -1450,13 +1460,6 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 
 /* CENAS PARA FAZER 
 
-
-//COMANDO r (PASSA OS TESTES PÚBLICOS) 
-- parque_existe() para o erro "<nome-parque>: no such parking."
-- iterar pela lista de parques até encontrar o que se quer remover
-- Apagar todos os elementos da listas ligadas de registos de entrada e de saída
-- Apagar o parque da lista de parques
-
 //MEMÓRIA
 - perror("Memory allocation error");
 - Alocar memória dinamicamente para matriculas, nome dos parques e listas ligadas de registos
@@ -1469,6 +1472,7 @@ void liberta(Parque stored_parques[MAX_PARQUES], HashTable *hashTable) {
 - Mudar nome de funções para ser mais claro
 - Formatação dos if e else
 - Dicionário de abreviações e expressões (cc por exemplo) (FORA e DENTRO; LIVRE e CONECTADO)
+- Descrição do raciocínio usado no projeto
 - Control f em palavras mal escritas (veiculo, matricula, carro, registro, obtem, saida)
 
 */
