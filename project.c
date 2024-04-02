@@ -265,7 +265,7 @@ void processar_parques() {
     if (n_argumentos == 0) {
         for (i = 0; i < N_parques; i++) {
             printf("%s %d %d\n", stored_parques[i].nome_parque, 
-            stored_parques[i].capacidade, stored_parques[i].lugares_disponiveis);
+            stored_parques[i].capacidade,stored_parques[i].lugares_disponiveis);
         }
         return;
     } 
@@ -723,11 +723,11 @@ void processar_entradas(HashTable *hashTable) {
         if (indice_parque) {
             Parque *parque = &stored_parques[indice_parque - 1];
             
-            int resultado = insere_entrada_parque(parque, matricula, data_entrada,
+            int resultado=insere_entrada_parque(parque, matricula, data_entrada,
                                                   hora_entrada, hashTable);
             if (resultado == 0) {
                 //Imprime a informação sobre o parque após cada entrada
-                printf("%s %d\n", parque->nome_parque, parque->lugares_disponiveis);
+                printf("%s %d\n",parque->nome_parque,parque->lugares_disponiveis);
             }
             //Erros
             else if (resultado == -1) {
@@ -947,7 +947,7 @@ void processar_saidas(HashTable *hashTable) {
         Data data_saida;
         Hora hora_saida;
         //Converte a data e hora de saída para o formato desejado
-        sscanf(argumentos[2], "%d-%d-%d", &data_saida.d, &data_saida.m, &data_saida.a);
+        sscanf(argumentos[2],"%d-%d-%d",&data_saida.d,&data_saida.m,&data_saida.a);
         sscanf(argumentos[3], "%d:%d", &hora_saida.h, &hora_saida.min);
 
         //Verifica se o parque existe, se existir processa o input dado
@@ -1009,10 +1009,10 @@ void mostrar_faturacao_diaria(char *nome_parque) {
         while (atual != NULL) {
             //Verifica se a data do registo atual é diferente da anterior
             if (!dataIgual(atual->data, data_anterior)) {
-                //Se a data não for a primeira, imprime a faturação total da data anterior
+                //Se a data não é a primeira, lista a faturação da data anterior
                 if (data_anterior.a != 0) {
-                    printf("%02d-%02d-%02d %.2f\n", data_anterior.d, data_anterior.m,
-                           data_anterior.a, faturacao_total);
+                    printf("%02d-%02d-%02d %.2f\n", data_anterior.d, 
+                           data_anterior.m, data_anterior.a, faturacao_total);
                 }
                 //Reinicia a faturação total para a nova data
                 faturacao_total = 0.0;
@@ -1208,7 +1208,7 @@ void mostrar_registos_veiculo(char *matricula) {
                 printf("%s %02d-%02d-%d %02d:%02d", parque->nome_parque, 
                        registo->data.d, registo->data.m, registo->data.a,
                        registo->hora.h, registo->hora.min);
-                //Se o veículo está dentro do parque, não mostra a data/hora de saída
+                //Se o veículo está dentro do parque, não mostra a data de saída
                 if (registo->estado == LIVRE) {
                     printf("\n");
                 } else {
@@ -1310,7 +1310,8 @@ void remove_parque_e_registos(char *nome_parque, HashTable *hashTable) {
     int indice_parque = parque_existe(nome_parque);
     if (indice_parque) {
         //Remove o parque e todas as entradas e saídas associadas a ele
-        remove_registos_entradas_parque(&stored_parques[indice_parque - 1], hashTable);
+        remove_registos_entradas_parque(&stored_parques[indice_parque - 1],
+                                        hashTable);
         remove_registos_saidas_parque(&stored_parques[indice_parque - 1]);
         remove_parque(indice_parque - 1);
 
@@ -1424,18 +1425,3 @@ void liberta_todos_os_parques() {
         stored_parques[i].saidas = NULL;    
     }
 }
-
-
-
-
-
-
-/* CENAS PARA FAZER 
-
-//MEMÓRIA
-- Alocar memória dinamicamente para matrículas, nome dos parques e listas ligadas de registos
-- Free das matricuals, nome dos parques e listas ligadas de registos
-
-//CÓDIGO
-- return em funções void
-*/
