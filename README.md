@@ -24,13 +24,13 @@ gcc -Wall -Wextra -Werror -Wno-unused-result
 
 ## Estrutura do Repositório
 
-- `enunciado.md`(./enunciado.md): Contém a especificação completa do projeto, incluindo os comandos suportados e os requisitos funcionais.
-- `guidelines.md`(./guidelines.md): Contém as diretrizes de formatação, comentários, organização do código e uso de constantes.
-- `debugging.md`(./debugging.md): Contém informações detalhadas sobre como depurar o projeto, incluindo o uso de ferramentas como valgrind e fsanitize.
+- [enunciado.md](./enunciado.md): Contém a especificação completa do projeto, incluindo os comandos suportados e os requisitos funcionais.
+- [guidelines.md](./guidelines.md): Contém as diretrizes de formatação, comentários, organização do código e uso de constantes.
+- [debugging.md](./debugging.md): Contém informações detalhadas sobre como depurar o projeto, incluindo o uso de ferramentas como valgrind e fsanitize.
 
 ## Depuração
 
-Para depurar o projeto, consulte o `debugging.md`. Algumas das ferramentas recomendadas incluem:
+Para depurar o projeto, consulte o [debugging.md]. Algumas das ferramentas recomendadas incluem:
 
 - `valgrind`: Para analisar o uso de memória.
 - `fsanitize`: Para detectar erros de memória.
