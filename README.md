@@ -24,9 +24,9 @@ gcc -Wall -Wextra -Werror -Wno-unused-result
 
 ## Estrutura do Repositório
 
-- `enunciado.md`: Contém a especificação completa do projeto, incluindo os comandos suportados e os requisitos funcionais.
-- `guidelines.md`: Contém as diretrizes de formatação, comentários, organização do código e uso de constantes.
-- `debugging.md`: Contém informações detalhadas sobre como depurar o projeto, incluindo o uso de ferramentas como valgrind e fsanitize.
+- `enunciado.md`(./enunciado.md): Contém a especificação completa do projeto, incluindo os comandos suportados e os requisitos funcionais.
+- `guidelines.md`(./guidelines.md): Contém as diretrizes de formatação, comentários, organização do código e uso de constantes.
+- `debugging.md`(./debugging.md): Contém informações detalhadas sobre como depurar o projeto, incluindo o uso de ferramentas como valgrind e fsanitize.
 
 ## Depuração
 
@@ -61,5 +61,3 @@ Mostra a faturação de um parque de estacionamento.
 ### Comando `r`
 
 Remove um parque de estacionamento do sistema.
-
-Para mais informações, consulte os arquivos `enunciado.md`, `guidelines.md` e `debugging.md`.
