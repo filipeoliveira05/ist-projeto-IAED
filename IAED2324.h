@@ -1,7 +1,7 @@
 /**
  *Descrição: Ficheiro com as estruturas de dados e funções utilizadas no 
-             ficheiro project.c
- * @file project.h
+             ficheiro IAED2324.c
+ * @file IAED2324.h
  * @author ist1110633 Filipe Oliveira
 */
 
@@ -18,7 +18,7 @@
 #define min(a, b) (((a) < (b)) ? (a) : (b))
 #define max(a, b) (((a) > (b)) ? (a) : (b))
 
-/*Alguns estados possíveis durante o programa (explicados no project.c)*/
+/*Alguns estados possíveis durante o programa (explicados no IAED2324.c)*/
 #define TRUE 1
 #define FALSE 0
 #define DENTRO 1

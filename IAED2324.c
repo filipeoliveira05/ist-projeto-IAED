@@ -1,6 +1,6 @@
 /**
  *Descrição: Gestão de parques de estacionamento (Projeto IAED 2023/24).
- * @file project.c
+ * @file IAED2324.c
  * @author ist1110633 Filipe Oliveira
 */
 
@@ -44,7 +44,7 @@ registo de entrada não está associada uma saída.
 esse registo de entrada está associada uma saída.
 */
 
-#include "project.h"
+#include "IAED2324.h"
 
 /*Variável global que armazena o número de parques no sistema.*/
 int N_parques = 0;
