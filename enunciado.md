@@ -1,12 +1,5 @@
 # Enunciado do Projeto 1 - IAED 2023/24
 
-## Data de entrega: 01 de abril 2024, às 19h59
-
-## LOG alterações
-
-- 8mar24 - Publicação do enunciado.
-- 14mar24 - Exemplo de facturação adicionado
-
 ## 1. Introdução
 
 Pretende-se a construção de um sistema de gestão de parques de estacionamento.
